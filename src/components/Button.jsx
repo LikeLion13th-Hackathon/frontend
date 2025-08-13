@@ -19,7 +19,7 @@ export const Button = styled.button`
   }
 
   &:disabled {
-    background-color: #ccc;
+    background-color: #EBF0F7;
     cursor: not-allowed;
   }
 `;
