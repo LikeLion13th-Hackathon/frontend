@@ -4,7 +4,7 @@ import "./App.css";
 
 import Intro from "./pages/Intro";
 import Login from "./pages/Login";
-import Signup from "./pages/SignUp";
+import SignUp from "./pages/SignUp";
 import SignupComplete from "./pages/SignUpComplete";
 import MainPage from "./pages/MainPage";
 import Mission from "./pages/Mission";
@@ -21,7 +21,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Intro />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/signup-complete" element={<SignupComplete />} />
           <Route path="/mainpage" element={<MainPage />} />
           <Route path="/mission" element={<Mission />} />

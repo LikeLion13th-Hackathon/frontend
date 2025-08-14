@@ -1,0 +1,158 @@
+import styled from "styled-components";
+import { Button } from "../components/Button";
+
+export const Wrapper = styled.div`
+  margin: 0px auto;
+  width: 100%;
+  padding: 4vw;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding-bottom: 100px;
+`;
+
+export const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 4vh;
+`;
+
+export const Field = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vh;
+`;
+
+export const Label = styled.label`
+  font-weight: bold;
+  font-size: 16px;
+`;
+
+export const Required = styled.span`
+  color: red;
+  margin-left: 4px;
+  font-size: 16px;
+`;
+
+export const Input = styled.input`
+  flex: 1;
+  height: 40px;
+  padding: 0 20px;
+  font-size: 12px;
+  border-radius: 14px;
+  border: 1px solid #767676;
+  &::placeholder {
+    color: #AEAEAE;
+  }
+`;
+
+export const Select = styled.select`
+  height: 40px;
+  padding: 0 20px;
+  font-size: 12px;
+  color: #AEAEAE;
+  border-radius: 14px;
+  border: 1px solid #767676;
+  flex: 1;
+  background-color: white;
+
+  &:valid {
+    color: #000;
+  }
+`;
+
+export const Row = styled.div`
+  display: flex;
+  gap: 15px;
+  align-items: center;
+`;
+
+export const SubmitButton = styled(Button)`
+  position: fixed;
+  bottom: 4vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90vw;
+  padding: 16px;
+  color: white;
+  z-index: 1000;
+  box-sizing: border-box;
+`;
+
+export const VerifyButton = styled(Button)`
+  height: 40px;
+  width: 80px;
+  color: white;
+  font-size: 12px;
+`;
+
+
+export const RadioGroup = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+`;
+
+export const RadioOption = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  cursor: pointer;
+
+  input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+  }
+
+  input[type="radio"]:checked {
+    border: 5px solid #FACD2B;
+  }
+`;
+
+export const CheckboxGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+`;
+
+export const CheckboxOption = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+
+  input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    position: relative;
+  }
+
+  input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 4px;
+    height: 8px;
+    border: solid #FACD2B;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+`;
+
+export const Section = styled.div`
+  margin-bottom: 32px;
+`;
