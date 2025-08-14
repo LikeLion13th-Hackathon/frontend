@@ -4,7 +4,7 @@ export const Bar = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 35px;
+  margin: 28px;
 `;
 
 export const Circle = styled.div`
