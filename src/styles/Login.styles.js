@@ -1,5 +1,5 @@
 import styled, { keyframes } from "styled-components";
-import { Button } from "../components/Button";
+import { Link } from "react-router-dom";
 
 export const Container = styled.div`
   display: flex;
@@ -18,26 +18,33 @@ export const TitleSmall = styled.p`
   margin-bottom: 5vh;
 `;
 
-// ¿òÁ÷ÀÌ´Â ¾Ö´Ï¸ŞÀÌ¼Ç
+export const Input = styled.input`
+  width: 75vw;
+  max-width: 360px;
+  height: 7vh;
+  padding: 2vh;
+  font-size: 14px;
+  border: 1.2px solid #767676;
+  border-radius: 6px;
+  cursor: pointer;
+  box-sizing: border-box;
+  margin-bottom: 1vh;
+`;
+
+export const SignUpLink = styled(Link)`
+  color: #767676;
+  font-size: 14px;
+  margin-top: 3.5vh;
+`;
+
+// ì›€ì§ì´ëŠ” ì• ë‹ˆë©”ì´ì…˜ (ìºë¦­í„°)
 const float = keyframes`
   0%   { transform: translateY(0); }
   50%  { transform: translateY(-7px); }
   100% { transform: translateY(0); }
 `;
-export const BeeImg = styled.img`
-  width: 20vh;
-  margin-bottom: 5vh;
+export const BbiImg = styled.img`
+  width: 21vh;
+  margin-bottom: 4vh;
   animation: ${float} 3s ease-in-out infinite;
-`;
-
-export const LoginButton = styled(Button)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2vh;
-  background-color: white;
-  color: #767676;
-  border: 1px solid #767676;
-  font-weight: 500;
-  margin-bottom: 2vh;
 `;

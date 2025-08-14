@@ -3,7 +3,7 @@ import axios from "axios";
 // 로그인 요청
 export const login = async ({ email, password }) => {
   const response = await axios.post(
-    `${process.env.REACT_APP_API_URL}/api/login`,
+    `${process.env.REACT_APP_API_URL}/api/auth/login`,
     { email, password },
     {
       headers: {
