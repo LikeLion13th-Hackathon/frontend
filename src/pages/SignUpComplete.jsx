@@ -2,8 +2,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/Button";
-import BeeFace from "../assets/characters/Logo.png";
-import MainLogo from "../assets/characters/Logo.png";
+import BbiBasic from "../assets/characters/bbi_basic.png";
 
 export const Container = styled.div`
   min-height: 100dvh;
@@ -41,8 +40,7 @@ export default function SignupComplete() {
 
   return (
     <Container>
-      <img src={BeeFace} style={{ width: "15%", marginBottom: "1vh" }} />
-      <img src={MainLogo} style={{ width: "35%" }} />
+      <img src={BbiBasic} style={{ width: "40%" }} />
       <TitleSmall>회원가입이 완료되었습니다!</TitleSmall>
       <Button onClick={handleLoginClick} style={{ marginBottom: "1.5vh" }}>
         로그인
