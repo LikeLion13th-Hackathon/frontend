@@ -10,7 +10,7 @@ import {
   VerifyButton,
 } from "../../styles/SignUp.styles";
 import { AgreementWrapper } from "../../styles/AgreementSection.styles";
-import AgreementItem from "../AgreementItem";
+import AgreementItem from "../SignUp/AgreementItem";
 
 export default function StepOne({
   name,
