@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Wrapper } from "../styles/SignUp.styles";
-import StepBar from "../components/StepBar";
+import StepBar from "../components/SignUp/StepBar";
 import StepOne from "../components/SignUp/StepOne";
 import StepTwo from "../components/SignUp/StepTwo";
 import { signup } from "../api/auth";
@@ -35,7 +35,15 @@ export default function SignUp() {
     setAgreements((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const isFirstValid = name && birthYear && birthMonth && birthDay && email && password && agreements.terms && agreements.location;
+  const isFirstValid =
+    name &&
+    birthYear &&
+    birthMonth &&
+    birthDay &&
+    email &&
+    password &&
+    agreements.terms &&
+    agreements.location;
   const isSecondValid = job && selectedPlaces.length > 0;
 
   const handleSubmit = async (e) => {
@@ -43,7 +51,10 @@ export default function SignUp() {
       nickname: name,
       email,
       password,
-      birthDate: `${birthYear}-${birthMonth.padStart(2, "0")}-${birthDay.padStart(2, "0")}`,
+      birthDate: `${birthYear}-${birthMonth.padStart(
+        2,
+        "0"
+      )}-${birthDay.padStart(2, "0")}`,
       role: job,
       isOver14: agreements.isOver14,
       serviceAgreed: agreements.terms,
@@ -63,7 +74,6 @@ export default function SignUp() {
       console.error("회원가입 실패:", err);
       alert("회원가입에 실패했습니다. 다시 시도해주세요.");
     }
-
   };
 
   return (

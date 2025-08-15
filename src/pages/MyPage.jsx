@@ -85,7 +85,7 @@ function MyPage() {
             <ChangeText onClick={() => navigate("/mypage/edit-profile")}>
               변경하기
             </ChangeText>
-            <FiChevronRight style={{ color: "#767676" }} />
+            <FiChevronRight style={{ color: "#767676", marginTop: "1.5px" }} />
           </ChangeSection>
         </Section>
 
