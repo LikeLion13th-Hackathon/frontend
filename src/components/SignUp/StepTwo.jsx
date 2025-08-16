@@ -7,6 +7,8 @@ import {
   CheckboxGroup,
   CheckboxOption,
   Section,
+  LimitBadge,
+  LabelRow,
 } from "../../styles/SignUp.styles";
 
 export default function StepTwo({
@@ -53,9 +55,12 @@ export default function StepTwo({
       </Section>
 
       <Section>
-        <Label>
-          선호 장소<Required>*</Required>
-        </Label>
+        <LabelRow>
+          <Label>
+            선호 장소<Required>*</Required>
+          </Label>
+          <LimitBadge>최대 3개</LimitBadge>
+        </LabelRow>
         <CheckboxGroup>
           {PLACES.map((place) => (
             <CheckboxOption key={place}>
@@ -64,6 +69,9 @@ export default function StepTwo({
                 value={place}
                 checked={selectedPlaces.includes(place)}
                 onChange={() => togglePlace(place)}
+                disabled={
+                  !selectedPlaces.includes(place) && selectedPlaces.length >= 3
+                }
               />
               <span>{place}</span>
             </CheckboxOption>
