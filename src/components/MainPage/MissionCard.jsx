@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { MISSION_CATEGORY } from "../../constants/missionCategory.js";
 import Coin from "../../assets/icons/coin.png";
 
-const Card = styled.div`
+export const Card = styled.div`
   position: relative;
   border-radius: 16px;
   box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
@@ -13,7 +13,7 @@ const Card = styled.div`
 `;
 
 // 이미지 영역
-const Media = styled.div`
+export const Media = styled.div`
   position: relative;
   aspect-ratio: 4 / 1;
   overflow: hidden;
@@ -22,10 +22,10 @@ const Media = styled.div`
 `;
 
 // 미션 설명 영역
-const Badge = styled.span`
+export const Badge = styled.span`
   position: absolute;
   left: 10px;
-  bottom: -16px;
+  bottom: -14px;
   padding: 0.8vh 6vw;
   padding-bottom: 2vh;
   border-radius: 16px;
@@ -36,17 +36,17 @@ const Badge = styled.span`
   pointer-events: none;
 `;
 
-const Body = styled.div`
+export const Body = styled.div`
   padding: 0.8vh 1.8vh 1.8vh 1.8vh;
 `;
 
-const Title = styled.div`
+export const Title = styled.div`
   font-size: 15px;
   font-weight: 700;
   margin-top: 6px;
 `;
 
-const FooterRow = styled.div`
+export const FooterRow = styled.div`
   margin-top: 2px;
   display: flex;
   justify-content: flex-end;

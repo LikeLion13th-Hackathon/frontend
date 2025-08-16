@@ -24,14 +24,24 @@ function Login() {
     e?.preventDefault?.();
 
     try {
-      const res = await login({ email, password }); // 아래 login 함수 참고
-      const { userId, nickname, email: userEmail, message } = res.data ?? res;
+      const res = await login({ email, password });
+      const {
+        userId,
+        nickname,
+        email: userEmail,
+        accessToken,
+        tokenType,
+        message,
+      } = res?.data ?? res ?? {};
 
       // 필요하면 사용자 정보 저장
       localStorage.setItem(
         "user",
         JSON.stringify({ userId, nickname, email: userEmail })
       );
+
+      if (accessToken) localStorage.setItem("token", accessToken);
+      if (tokenType) localStorage.setItem("tokenType", tokenType);
 
       toast.success(message || "로그인 성공!", {
         autoClose: 2000,
