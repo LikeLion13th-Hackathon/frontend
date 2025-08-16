@@ -41,7 +41,7 @@ function MyPage() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     toast.success("정상적으로 로그아웃되었습니다.", { autoClose: 2000 });
-    navigate("/");
+    navigate("/login");
   };
 
   if (!user) return <div>Loading...</div>;
