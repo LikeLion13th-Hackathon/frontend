@@ -15,6 +15,9 @@ export const TopRow = styled.div`
 export const CheckBox = styled.div`
   font-size: 18px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const LabelArea = styled.div`
@@ -44,6 +47,9 @@ export const ToggleText = styled.span`
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const AgreementWrapper = styled.div`
@@ -53,7 +59,7 @@ export const AgreementWrapper = styled.div`
 `;
 
 export const AgreementBody = styled.div`
-  padding: 12px 0;
+  padding: 12px;
   font-size: 13px;
   color: #555;
   line-height: 1.5;
