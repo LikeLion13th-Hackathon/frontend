@@ -4,7 +4,7 @@ export const Container = styled.div`
   padding: 2vh;
   padding-top: 0;
 
-  // ½ºÅ©·Ñ °ü·Ã
+  // ìŠ¤í¬ë¡¤ ê´€ë ¨
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding-bottom: calc(88px + env(safe-area-inset-bottom));

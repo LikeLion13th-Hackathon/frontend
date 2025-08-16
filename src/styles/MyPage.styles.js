@@ -4,7 +4,7 @@ import { IoIosArrowBack } from "react-icons/io";
 
 export const Container = styled.div`
   padding: 2vh;
-  padding-top: 0;
+  padding-top: 1vh;
 `;
 
 export const Header = styled.div`

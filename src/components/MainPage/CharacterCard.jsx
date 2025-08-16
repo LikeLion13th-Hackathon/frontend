@@ -1,8 +1,8 @@
-// ¸ŞÀÎÆäÀÌÁö Ä³¸¯ÅÍÄ«µå
+// ë©”ì¸í˜ì´ì§€ ìºë¦­í„°ì¹´ë“œ
 import styled from "styled-components";
 
-// ÀüÃ¼ Ä«µå, ·¹ÀÌ¾î
-const Card = styled.div`
+// ì „ì²´ ì¹´ë“œ, ë ˆì´ì–´
+export const Card = styled.div`
   position: relative;
   width: 100%;
   max-width: 420px;
@@ -12,7 +12,7 @@ const Card = styled.div`
   cursor: pointer;
 `;
 
-const BgImg = styled.div`
+export const BgImg = styled.div`
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -22,8 +22,8 @@ const BgImg = styled.div`
   pointer-events: none;
 `;
 
-// ¹è°æ À§¿¡ ¿Ã¶ó°¡´Â ³»¿ë
-const Content = styled.div`
+// ë°°ê²½ ìœ„ì— ì˜¬ë¼ê°€ëŠ” ë‚´ìš©
+export const Content = styled.div`
   position: absolute;
   inset: 0;
   display: flex;
@@ -32,14 +32,14 @@ const Content = styled.div`
   padding: 3vh;
 `;
 
-// ·¹º§ / ÀÌ¸§ / ÁøÇà¹Ù
-const TopRow = styled.div`
+// ë ˆë²¨ / ì´ë¦„ / ì§„í–‰ë°”
+export const TopRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
-const LevelBadge = styled.span`
+export const LevelBadge = styled.span`
   background: #f2c21a;
   color: #fff;
   font-size: 12px;
@@ -50,7 +50,7 @@ const LevelBadge = styled.span`
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25);
 `;
 
-const ProgressWrap = styled.div`
+export const ProgressWrap = styled.div`
   width: 100%;
   height: 12px;
   background: #e9eef4;
@@ -60,15 +60,15 @@ const ProgressWrap = styled.div`
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25);
 `;
 
-const ProgressBar = styled.div`
+export const ProgressBar = styled.div`
   width: ${(p) => Math.max(0, Math.min(100, p.$value))}%;
   height: 100%;
   font-size: 10px;
   background: #f2c21a;
 `;
 
-// Ä³¸¯ÅÍ
-const Character = styled.img`
+// ìºë¦­í„°
+export const Character = styled.img`
   align-self: center;
   width: 55%;
 `;
@@ -76,7 +76,7 @@ const Character = styled.img`
 export default function CharacterCard({
   bg,
   levelText = "Level 3",
-  name = "»ß¾àÀÌ",
+  name = "ì‚ì•½ì´",
   progress = 87.2,
   characterSrc,
   onClick,

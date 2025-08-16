@@ -1,4 +1,4 @@
-// Àü¿ª ½ºÅ¸ÀÏ (±Û²Ã)
+// ì „ì—­ ìŠ¤íƒ€ì¼ (ê¸€ê¼´)
 import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
@@ -12,5 +12,5 @@ export const GlobalStyle = createGlobalStyle`
                  'NanumBarunGothic', system-ui, -apple-system, 'Segoe UI',
                  Roboto, 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
   }
-  button, input, textarea, select { font: inherit; } 
+  button, input, textarea, select { font: inherit; }
 `;

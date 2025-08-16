@@ -1,6 +1,7 @@
 // 메인페이지
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { Container, Page } from "../styles/MainPage.styles";
 import MainPageHeader from "../components/MainPage/MainPageHeader";
 import CharacterCard from "../components/MainPage/CharacterCard";
@@ -19,6 +20,7 @@ function MainPage() {
   //   const token = localStorage.getItem("token");
   //   if (!token || token === "null" || token.trim() === "") {
   //     navigate("/login");
+  //     toast.warn("로그인이 필요합니다.", { autoClose: 2000 });
   //   }
   // }, [navigate]);
 
@@ -67,7 +69,7 @@ function MainPage() {
         </h2>
         <MissionList
           items={missions}
-          onClick={(id) => navigate(`/missions/${id}`)}
+          onClick={(id) => navigate(`/mission/${id}`)}
         />
       </Container>
       <Footer />

@@ -38,11 +38,10 @@ function MyPage() {
 
   // 로그아웃
   const handleLogout = () => {
-    // ‼️ 명세서 나오면 바꾸기!
-    toast.info("로그아웃(실제 처리는 백엔드 연동 시 적용)", {
-      autoClose: 2000,
-    });
-    navigate("/login");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    toast.success("정상적으로 로그아웃되었습니다.", { autoClose: 2000 });
+    navigate("/");
   };
 
   if (!user) return <div>Loading...</div>;
