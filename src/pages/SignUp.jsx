@@ -17,10 +17,10 @@ export default function SignUp() {
   const [birthMonth, setBirthMonth] = useState("");
   const [birthDay, setBirthDay] = useState("");
   const [agreements, setAgreements] = useState({
-    isOver14: false,
-    terms: false,
-    marketing: false,
+    service: false,
+    privacy: false,
     location: false,
+    marketing: false,
   });
   const [job, setJob] = useState("");
   const [selectedPlaces, setSelectedPlaces] = useState([]);
@@ -42,7 +42,8 @@ export default function SignUp() {
     birthDay &&
     email &&
     password &&
-    agreements.terms &&
+    agreements.service &&
+    agreements.privacy &&
     agreements.location;
   const isSecondValid = job && selectedPlaces.length > 0;
 
@@ -56,9 +57,8 @@ export default function SignUp() {
         "0"
       )}-${birthDay.padStart(2, "0")}`,
       role: job,
-      isOver14: agreements.isOver14,
-      serviceAgreed: agreements.terms,
-      privacyAgreed: agreements.terms,
+      serviceAgreed: agreements.service,
+      privacyAgreed: agreements.privacy,
       locationConsent: agreements.location,
       marketingConsent: agreements.marketing,
       sido: "서울특별시", // 지역 입력 추가 안해서 일단 예시

@@ -79,14 +79,6 @@ export const SubmitButton = styled(Button)`
   box-sizing: border-box;
 `;
 
-export const VerifyButton = styled(Button)`
-  height: 40px;
-  width: 80px;
-  color: white;
-  font-size: 12px;
-`;
-
-
 export const RadioGroup = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -151,8 +143,30 @@ export const CheckboxOption = styled.label`
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
   }
+
+  input[type="checkbox"]:disabled {
+    background-color: #f5f5f5;
+    border-color: #ddd;
+    cursor: not-allowed;
+  }
 `;
 
 export const Section = styled.div`
   margin-bottom: 32px;
+`;
+
+export const LabelRow = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+`;
+
+export const LimitBadge = styled.span`
+  font-size: 10px;
+  color: #555;
+  background: #f4f6fb;
+  padding: 2px 8px;
+  margin-left: 8px;
+  margin-top: 4px;
+  border-radius: 500px;
 `;
