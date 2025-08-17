@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Header, BackIcon } from "../styles/MyPage.styles";
 import {
   Container,
-  Card, // 지도 박스(배경 이미지 들어감)
+  Card,
   TagRow,
   TagGroup,
   Badge,
@@ -12,19 +12,18 @@ import {
   Divider,
   LocationPill,
   LocEm,
-  MapBox,
-  Marker,
   Section,
   FieldTitle,
   FieldText,
 } from "../styles/MissionDetail.styles";
 import MapView from "../components/MapView";
 import { Button } from "../components/Button";
-import BbiBasic from "../assets/characters/bbi_basic.png"; // 마커용 이미지
+import BbiBasic from "../assets/characters/bbi_basic.png";
 
 function MissionDetail() {
   const navigate = useNavigate();
   const [addr, setAddr] = useState("");
+  const [status, setStatus] = useState("ready"); // 미션 진행 상태
   const KAKAO_KEY = process.env.REACT_APP_KAKAO_MAP_KEY?.trim() || "";
 
   return (
@@ -40,20 +39,19 @@ function MissionDetail() {
             <TagGroup>
               <Badge>맞춤미션</Badge>
               <Badge>영수증 인증</Badge>
+              {status === "inProgress" && <Badge>진행 중</Badge>}
             </TagGroup>
           </TagRow>
           <Title>○○동 음식점에서 7000원 이상 결제하기</Title>
 
           <Divider />
 
-          {/* ▶ 여기! 실제 지도 */}
           <div style={{ position: "relative", width: "100%" }}>
             <MapView
               appKey={KAKAO_KEY}
-              markerSrc={BbiBasic} // ✅ 캐릭터 마커
+              markerSrc={BbiBasic}
               onAddressChange={({ address }) => setAddr(address)}
             />
-            {/* 지도 위 알약 오버레이 */}
             <LocationPill
               style={{
                 position: "absolute",
@@ -62,7 +60,7 @@ function MissionDetail() {
                 color: "#79797B",
               }}
             >
-              <LocEm>나의 위치</LocEm> | {addr || "위치 확인 중…"}
+              <LocEm>나의 위치</LocEm> | {addr || "확인 중…"}
             </LocationPill>
           </div>
 
@@ -84,7 +82,31 @@ function MissionDetail() {
           </Section>
         </Card>
 
-        <Button style={{ width: "100%" }}>미션 시작하기</Button>
+        {status === "ready" && (
+          <Button
+            style={{ width: "100%" }}
+            onClick={() => setStatus("inProgress")}
+          >
+            미션 시작하기
+          </Button>
+        )}
+
+        {status === "inProgress" && (
+          <>
+            <Button
+              style={{ width: "100%" }}
+              onClick={() => navigate("/receipt/upload")}
+            >
+              영수증 인증하기
+            </Button>
+            <Button
+              style={{ width: "100%", backgroundColor: "#EBF0F7" }}
+              onClick={() => setStatus("ready")}
+            >
+              미션 포기
+            </Button>
+          </>
+        )}
       </Container>
     </div>
   );

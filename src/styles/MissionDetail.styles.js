@@ -89,14 +89,6 @@ export const MapBox = styled.div`
   background: #dfe7ef;
 `;
 
-export const Marker = styled.img`
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 56px;
-  z-index: 1;
-`;
-
 // 설명글 영역
 export const Section = styled.section`
   width: 100%;
