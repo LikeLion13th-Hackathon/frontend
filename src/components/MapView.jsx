@@ -159,7 +159,7 @@ export default function MapView({
     };
   }, [appKey, markerSrc, defaultCenter]);
 
-  // 우하단 “내 위치” 버튼(재시도용)
+  // 새로고침 버튼
   return (
     <MapBox>
       <div ref={ref} style={{ width: "100%", height: "100%" }} />
@@ -171,15 +171,15 @@ export default function MapView({
         style={{
           position: "absolute",
           fontSize: "10px",
-          right: 12,
-          bottom: 12,
-          padding: "4px 8px",
+          right: 6,
+          top: 6,
+          padding: "6px 8px",
           borderRadius: 999,
           border: "1px solid #e5e7eb",
           background: "#fff",
           fontWeight: 600,
-          boxShadow: "0 6px 16px rgba(0,0,0,.08)",
           cursor: "pointer",
+          zIndex: "999",
         }}
       >
         {loading ? "불러오는 중…" : "새로고침"}

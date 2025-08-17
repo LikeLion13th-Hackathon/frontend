@@ -21,7 +21,7 @@ import BbiBasic from "../assets/characters/bbi_basic.png";
 
 function MissionDetail() {
   const navigate = useNavigate();
-  const { id } = useParams(); // ✅ URL 파라미터에서 id 가져오기
+  const { id } = useParams();
   const [mission, setMission] = useState(null);
   const [addr, setAddr] = useState("");
   const [status, setStatus] = useState("ready"); // 미션 진행 상태
@@ -83,8 +83,8 @@ function MissionDetail() {
             <LocationPill
               style={{
                 position: "absolute",
-                left: 12,
-                top: 12,
+                left: 6,
+                top: 6,
                 color: "#79797B",
               }}
             >

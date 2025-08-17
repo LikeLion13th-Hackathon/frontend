@@ -11,7 +11,6 @@ import {
   UserInfo,
   Name,
   Email,
-  BackIcon,
   Divider,
   Section,
   SectionTitle,
@@ -52,7 +51,6 @@ function MyPage() {
     <>
       <Container>
         <Header>
-          <BackIcon size={20} onClick={() => navigate(-1)} />
           <h3>마이페이지</h3>
         </Header>
 

@@ -12,8 +12,8 @@ export const Container = styled.div`
 export const Card = styled.div`
   position: relative;
   width: 100%;
+  height: 74vh;
   max-width: 420px;
-  aspect-ratio: 2 / 2.25;
   margin-bottom: 1vh;
   padding: 2vh;
   border-radius: 20px;
@@ -81,7 +81,7 @@ export const LocEm = styled.span`
 export const MapBox = styled.div`
   width: 100%;
   max-width: 420px;
-  height: 200px;
+  height: 240px;
   margin-bottom: 3vh;
   border-radius: 12px;
   overflow: hidden;
