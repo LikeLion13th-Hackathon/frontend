@@ -1,44 +1,20 @@
-import axiosInstance from "./axiosInstance";
+import axios from "axios";
+import instance from "./axiosInstance";
 
 // 로그인
 export const login = async ({ email, password }) => {
-  const { data } = await axiosInstance.post("/api/auth/login", {
-    email,
-    password,
-  });
+  const { data } = await instance.post("/api/auth/login", { email, password });
   return data;
 };
 
 // 회원가입
-export const signup = async ({
-  email,
-  password,
-  nickname,
-  birthDate,
-  role,
-  places,
-  serviceAgreed,
-  privacyAgreed,
-  locationConsent,
-  marketingConsent,
-  sido,
-  sigungu,
-  dong,
-}) => {
-  const { data } = await axiosInstance.post("/api/auth/signup", {
-    email,
-    password,
-    nickname,
-    birthDate,
-    role,
-    places,
-    serviceAgreed,
-    privacyAgreed,
-    locationConsent,
-    marketingConsent,
-    sido,
-    sigungu,
-    dong,
-  });
+export const signup = async (payload) => {
+  const { data } = await axios.post(
+    `${process.env.REACT_APP_API_URL}/api/auth/signup`,
+    payload,
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
   return data;
 };

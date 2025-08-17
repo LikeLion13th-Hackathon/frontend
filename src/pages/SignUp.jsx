@@ -25,6 +25,10 @@ export default function SignUp() {
   const [job, setJob] = useState("");
   const [selectedPlaces, setSelectedPlaces] = useState([]);
 
+  const [sido, setSido] = useState("");
+  const [sigungu, setSigungu] = useState("");
+  const [dong, setDong] = useState("");
+
   const togglePlace = (place) => {
     setSelectedPlaces((prev) =>
       prev.includes(place) ? prev.filter((p) => p !== place) : [...prev, place]
@@ -45,9 +49,11 @@ export default function SignUp() {
     agreements.service &&
     agreements.privacy &&
     agreements.location;
-  const isSecondValid = job && selectedPlaces.length > 0;
+  
+  const isSecondValid = job && selectedPlaces.length === 3 && sido && sigungu && dong;
 
   const handleSubmit = async (e) => {
+    const [pref1, pref2, pref3] = [...selectedPlaces, "", "", ""].slice(0, 3);
     const payload = {
       nickname: name,
       email,
@@ -56,15 +62,18 @@ export default function SignUp() {
         2,
         "0"
       )}-${birthDay.padStart(2, "0")}`,
+      sido,
+      sigungu,
+      dong,
       role: job,
-      serviceAgreed: agreements.service,
-      privacyAgreed: agreements.privacy,
+      pref1,
+      pref2,
+      pref3,
       locationConsent: agreements.location,
       marketingConsent: agreements.marketing,
-      sido: "서울특별시", // 지역 입력 추가 안해서 일단 예시
-      sigungu: "서대문구",
-      dong: "북가좌동",
-      places: selectedPlaces,
+      serviceAgreed: agreements.service,
+      privacyAgreed: agreements.privacy,
+
     };
     try {
       await signup(payload);
@@ -102,6 +111,12 @@ export default function SignUp() {
         <StepTwo
           job={job}
           setJob={setJob}
+          sido={sido}
+          setSido={setSido}
+          sigungu={sigungu}
+          setSigungu={setSigungu}
+          dong={dong}
+          setDong={setDong}
           selectedPlaces={selectedPlaces}
           togglePlace={togglePlace}
           onSubmit={handleSubmit}
