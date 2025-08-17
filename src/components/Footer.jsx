@@ -6,23 +6,19 @@ import {
   NavIcon,
   NavLabel,
 } from "../styles/Footer.styles";
-import HomeOn from "../assets/icons/Icon.png";
-import HomeOff from "../assets/icons/Icon.png";
-import GpaOn from "../assets/icons/Icon.png";
-import GpaOff from "../assets/icons/Icon.png";
-import GradOn from "../assets/icons/Icon.png";
-import GradOff from "../assets/icons/Icon.png";
-import PlanOn from "../assets/icons/Icon.png";
-import PlanOff from "../assets/icons/Icon.png";
-import MyOn from "../assets/icons/Icon.png";
-import MyOff from "../assets/icons/Icon.png";
+
+import { ReactComponent as MainIcon } from "../assets/icons/Footer/mainpage.svg";
+import { ReactComponent as MissionIcon } from "../assets/icons/Footer/mission.svg";
+import { ReactComponent as ShopIcon } from "../assets/icons/Footer/shop.svg";
+import { ReactComponent as LeaderboardIcon } from "../assets/icons/Footer/leaderboard.svg";
+import { ReactComponent as MyPageIcon } from "../assets/icons/Footer/mypage.svg";
 
 const menuList = [
-  { iconOn: HomeOn, iconOff: HomeOff, label: "홈", path: "/mainpage" },
-  { iconOn: GpaOn, iconOff: GpaOff, label: "미션", path: "/mission" },
-  { iconOn: GradOn, iconOff: GradOff, label: "상점", path: "/shop" },
-  { iconOn: PlanOn, iconOff: PlanOff, label: "리더보드", path: "/leaderboard" },
-  { iconOn: MyOn, iconOff: MyOff, label: "마이", path: "/mypage" },
+  { Icon: MainIcon, label: "홈", path: "/mainpage" },
+  { Icon: MissionIcon, label: "미션", path: "/mission" },
+  { Icon: ShopIcon, label: "상점", path: "/shop" },
+  { Icon: LeaderboardIcon, label: "리더보드", path: "/leaderboard" },
+  { Icon: MyPageIcon, label: "마이", path: "/mypage" },
 ];
 
 function Footer({ activeLabel }) {
@@ -31,27 +27,18 @@ function Footer({ activeLabel }) {
 
   return (
     <NavWrapper>
-      {menuList.map((menu) => {
-        const isActive =
-          activeLabel === menu.label || location.pathname === menu.path;
+      {menuList.map(({ Icon, label, path }) => {
+        const isActive = activeLabel === label || location.pathname === path;
 
         return (
           <NavItem
-            key={menu.path}
-            onClick={() => navigate(menu.path)}
+            key={path}
+            onClick={() => navigate(path)}
             className={isActive ? "active" : ""}
           >
-            <NavIcon>
-              <img
-                src={isActive ? menu.iconOn : menu.iconOff}
-                style={{
-                  width: "3vh",
-                  height: "3vh",
-                  objectFit: "contain",
-                }}
-              />
+            <NavIcon $active={isActive}>
+              <Icon aria-hidden />
             </NavIcon>
-            <NavLabel>{menu.label}</NavLabel>
           </NavItem>
         );
       })}
