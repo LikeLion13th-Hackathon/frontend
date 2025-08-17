@@ -6,5 +6,6 @@ export const MISSION_CATEGORY = {
   지역명소: { image: Park, badgeTextColor: "#F0702F" },
   지역맛집: { image: Park, badgeTextColor: "#9FC136" },
   특산품: { image: Park, badgeTextColor: "#FE98B6" },
+  기타: { image: Park, badgeTextColor: "#565253ff" },
   // 필요시 더 추가
 };

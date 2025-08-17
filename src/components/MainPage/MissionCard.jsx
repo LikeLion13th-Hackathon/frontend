@@ -1,4 +1,4 @@
-// 미션카드
+// 미션 카드
 import styled from "styled-components";
 import { MISSION_CATEGORY } from "../../constants/missionCategory.js";
 import Coin from "../../assets/icons/coin.png";
@@ -8,7 +8,7 @@ export const Card = styled.div`
   border-radius: 16px;
   box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  margin-bottom: 1.5vh;
+  margin-bottom: 1.8vh;
   cursor: pointer;
 `;
 
