@@ -170,21 +170,20 @@ export default function MapView({
         }}
         style={{
           position: "absolute",
+          fontSize: "10px",
           right: 12,
           bottom: 12,
-          padding: "8px 12px",
+          padding: "4px 8px",
           borderRadius: 999,
           border: "1px solid #e5e7eb",
           background: "#fff",
-          fontWeight: 700,
+          fontWeight: 600,
           boxShadow: "0 6px 16px rgba(0,0,0,.08)",
           cursor: "pointer",
         }}
       >
-        {loading ? "불러오는 중…" : "내 위치로"}
+        {loading ? "불러오는 중…" : "새로고침"}
       </button>
-      {/* 필요하면 상태 문구도 보이게 */}
-      {/* <div style={{position:'absolute', left:12, bottom:12, fontSize:12, color:'#6b7280'}}>{geoMsg}</div> */}
     </MapBox>
   );
 }
