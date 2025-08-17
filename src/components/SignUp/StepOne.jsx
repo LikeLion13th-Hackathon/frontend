@@ -34,15 +34,17 @@ export default function StepOne({
     if (!birthYear || !birthMonth || !birthDay) return;
     const max = daysInMonth(birthYear, birthMonth);
     if (Number(birthDay) > max) setBirthDay(String(max).padStart(2, "0"));
-  }, [birthYear, birthMonth]);
+  }, [birthYear, birthMonth, birthDay, setBirthDay]);
 
   return (
     <>
-      <Form>
+      <Form onSubmit={(e) => e.preventDefault()}>
         <Field>
           <Label>이름<Required>*</Required></Label>
           <Row style={{ gap: 8 }}>
             <Input
+              id="name"
+              type="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="이름을 입력해주세요"
@@ -53,22 +55,36 @@ export default function StepOne({
         <Field>
           <Label>생년월일<Required>*</Required></Label>
           <Row>
-            <Select required value={birthYear} onChange={(e) => setBirthYear(e.target.value)}>
-              <option value="" disabled hidden>출생연도</option>
+            <Select 
+              required 
+              value={birthYear} 
+              onChange={(e) => setBirthYear(e.target.value)}
+            >
+              <option value="">출생연도</option>
               {Array.from({ length: 100 }, (_, i) => thisYear - i).map((y) => (
                 <option key={y} value={y}>{y}</option>
               ))}
             </Select>
 
-            <Select required value={birthMonth} onChange={(e) => setBirthMonth(e.target.value)}>
-              <option value="" disabled hidden>출생 월</option>
+            <Select 
+              required 
+              value={birthMonth} 
+              onChange={(e) => setBirthMonth(e.target.value)}
+              disabled={!birthYear}
+            >
+              <option value="">출생 월</option>
               {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map((m) => (
                 <option key={m} value={m}>{m}</option>
               ))}
             </Select>
 
-            <Select required value={birthDay} onChange={(e) => setBirthDay(e.target.value)}>
-              <option value="" disabled hidden>출생 일</option>
+            <Select 
+              required 
+              value={birthDay} 
+              onChange={(e) => setBirthDay(e.target.value)}
+              disabled={!birthMonth}
+            >
+              <option value="">출생 일</option>
               {Array.from({ length: dayCount }, (_, i) => String(i + 1).padStart(2, "0")).map((d) => (
                 <option key={d} value={d}>{d}</option>
               ))}
@@ -80,6 +96,7 @@ export default function StepOne({
           <Label>이메일<Required>*</Required></Label>
           <Row>
             <Input
+              id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -92,6 +109,7 @@ export default function StepOne({
           <Label>비밀번호<Required>*</Required></Label>
           <Row>
             <Input
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

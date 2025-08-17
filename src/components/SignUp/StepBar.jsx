@@ -17,16 +17,16 @@ export const Circle = styled.div`
 export const Line = styled.div`
   width: 35px;
   height: 2px;
-  background-color: ${({ $active }) => ($active ? "#FFD233" : "#E5E8EB")};
+  background-color: #E5E8EB
 `;
 
 
 export default function StepBar({ step }) {
   return (
     <Bar>
-      <Circle $active={step >= 1} />
-      <Line $active={step >= 2} />
-      <Circle $active={step >= 2} />
+      <Circle $active={step === 1} />
+      <Line/>
+      <Circle $active={step === 2} />
     </Bar>
   );
 }

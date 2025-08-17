@@ -48,23 +48,39 @@ export const Input = styled.input`
 
 export const Select = styled.select`
   height: 40px;
-  padding: 0 20px;
+  line-height: 40px;  
+  padding: 0 10px;
+  box-sizing: border-box;
+
   font-size: 12px;
   color: #AEAEAE;
+
   border-radius: 14px;
   border: 1px solid #767676;
-  flex: 1;
+
+  flex: 1 1 0;
+  min-width: 0;
+  width: 100%;
+
   background-color: white;
 
   &:valid {
     color: #000;
   }
+  &:disabled {
+    opacity: 1;
+    -webkit-text-fill-color: #AEAEAE; 
+    border: 1px solid #767676;
+    cursor: not-allowed;
+  }
+
 `;
 
 export const Row = styled.div`
   display: flex;
   gap: 15px;
   align-items: center;
+  width: 100%;
 `;
 
 export const SubmitButton = styled(Button)`
@@ -83,8 +99,7 @@ export const RadioGroup = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 10px;
-  margin-bottom: 20px;
+  margin-top: 5px;
 `;
 
 export const RadioOption = styled.label`
@@ -99,7 +114,7 @@ export const RadioOption = styled.label`
     -webkit-appearance: none;
     width: 18px;
     height: 18px;
-    border: 1px solid #ccc;
+    border: 1px solid #767676;
     border-radius: 50%;
   }
 
@@ -112,7 +127,7 @@ export const CheckboxGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 10px;
+  margin-top: 5px;
 `;
 
 export const CheckboxOption = styled.label`
@@ -149,10 +164,6 @@ export const CheckboxOption = styled.label`
     border-color: #ddd;
     cursor: not-allowed;
   }
-`;
-
-export const Section = styled.div`
-  margin-bottom: 32px;
 `;
 
 export const LabelRow = styled.div`
