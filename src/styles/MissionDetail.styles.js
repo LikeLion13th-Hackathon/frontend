@@ -12,7 +12,7 @@ export const Container = styled.div`
 export const Card = styled.div`
   position: relative;
   width: 100%;
-  height: 74vh;
+  height: 72vh;
   max-width: 420px;
   margin-bottom: 1vh;
   padding: 2vh;
@@ -50,7 +50,7 @@ export const Title = styled.h3`
   max-width: 420px;
   margin: 1.5vh 0 0;
   font-size: 17px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.4;
 `;
 

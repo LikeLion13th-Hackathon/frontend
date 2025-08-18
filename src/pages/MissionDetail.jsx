@@ -18,6 +18,10 @@ import {
 import MapView from "../components/MapView";
 import { Button } from "../components/Button";
 import BbiBasic from "../assets/characters/bbi_basic.png";
+import {
+  ModalOverlay,
+  ModalContent,
+} from "../components/MissionDetail/ReceiptUpload";
 
 function MissionDetail() {
   const navigate = useNavigate();
@@ -25,6 +29,7 @@ function MissionDetail() {
   const [mission, setMission] = useState(null);
   const [addr, setAddr] = useState("");
   const [status, setStatus] = useState("ready"); // 미션 진행 상태
+  const [showConfirm, setShowConfirm] = useState(false);
   const KAKAO_KEY = process.env.REACT_APP_KAKAO_MAP_KEY?.trim() || "";
 
   // 임시: 나중에는 API 연동!!!!!!!!!
@@ -65,9 +70,11 @@ function MissionDetail() {
         <Card>
           <TagRow>
             <TagGroup>
+              {status === "inProgress" && (
+                <Badge style={{ backgroundColor: "#FF4E69" }}>진행 중</Badge>
+              )}
               <Badge>{mission.category}</Badge>
               <Badge>영수증 인증</Badge>
-              {status === "inProgress" && <Badge>진행 중</Badge>}
             </TagGroup>
           </TagRow>
           <Title>{mission.title}</Title>
@@ -126,14 +133,46 @@ function MissionDetail() {
               영수증 인증하기
             </Button>
             <Button
-              style={{ width: "100%", backgroundColor: "#EBF0F7" }}
-              onClick={() => setStatus("ready")}
+              style={{
+                width: "100%",
+                backgroundColor: "#FF4E69",
+              }}
+              onClick={() => {
+                setShowConfirm(true);
+              }}
             >
               미션 포기
             </Button>
           </>
         )}
       </Container>
+
+      {/* 포기 확인 모달 */}
+      {showConfirm && (
+        <ModalOverlay onClick={() => setShowConfirm(false)}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <h4 style={{ margin: "20px" }}>정말 미션을 포기하시겠어요?</h4>
+            <Button
+              onClick={() => {
+                setStatus("ready");
+                setShowConfirm(false);
+              }}
+            >
+              포기하기
+            </Button>
+            <Button
+              style={{
+                backgroundColor: "#EBF0F7",
+                color: "#808080",
+                margin: "1.4vh",
+              }}
+              onClick={() => setShowConfirm(false)}
+            >
+              취소
+            </Button>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </div>
   );
 }

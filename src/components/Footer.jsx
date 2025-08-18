@@ -6,7 +6,6 @@ import {
   NavIcon,
   NavLabel,
 } from "../styles/Footer.styles";
-
 import { ReactComponent as MainIcon } from "../assets/icons/Footer/mainpage.svg";
 import { ReactComponent as MissionIcon } from "../assets/icons/Footer/mission.svg";
 import { ReactComponent as ShopIcon } from "../assets/icons/Footer/shop.svg";
@@ -17,7 +16,7 @@ const menuList = [
   { Icon: MainIcon, label: "홈", path: "/mainpage" },
   { Icon: MissionIcon, label: "미션", path: "/mission" },
   { Icon: ShopIcon, label: "상점", path: "/shop" },
-  { Icon: LeaderboardIcon, label: "리더보드", path: "/leaderboard" },
+  { Icon: LeaderboardIcon, label: "랭킹", path: "/leaderboard" },
   { Icon: MyPageIcon, label: "마이", path: "/mypage" },
 ];
 
@@ -39,6 +38,7 @@ function Footer({ activeLabel }) {
             <NavIcon $active={isActive}>
               <Icon aria-hidden />
             </NavIcon>
+            <NavLabel $active={isActive}>{label}</NavLabel>
           </NavItem>
         );
       })}

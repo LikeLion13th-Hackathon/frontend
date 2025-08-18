@@ -12,7 +12,7 @@ export const NavWrapper = styled.div`
   align-items: center;
   border-top: 1px solid #eee;
   z-index: 999;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 
   box-shadow: 0px -5px 14px rgba(0, 0, 0, 0.1);
 `;
@@ -21,17 +21,16 @@ export const NavItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 12px;
-  color: #AEAEAE;
+  color: #aeaeae;
   min-width: 0;
 `;
 
 export const NavIcon = styled.div`
-  font-size: 20px;
+  font-size: 16px;
   color: ${({ $active }) => ($active ? "#FACD2B" : "#AEAEAE")};
 `;
 
 export const NavLabel = styled.span`
-  font-size: 12px;
+  font-size: 9px;
   font-weight: 600;
 `;

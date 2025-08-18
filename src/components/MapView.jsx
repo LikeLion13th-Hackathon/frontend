@@ -1,3 +1,4 @@
+// 카카오맵 API
 import { useEffect, useRef, useState } from "react";
 import { MapBox } from "../styles/MissionDetail.styles";
 
@@ -36,7 +37,7 @@ export default function MapView({
   appKey,
   markerSrc,
   onAddressChange,
-  defaultCenter = { lat: 37.5665, lng: 126.978 }, // 서울시청
+  defaultCenter = { lat: 37.5665, lng: 126.978 }, // 위치 기본값: 서울시청
 }) {
   const ref = useRef(null);
   const mapRef = useRef(null);
@@ -44,7 +45,7 @@ export default function MapView({
   const geocoderRef = useRef(null);
 
   const [loading, setLoading] = useState(true);
-  const [geoMsg, setGeoMsg] = useState(""); // 디버그/상태 표시용(원하면 UI로 노출 가능)
+  const [geoMsg, setGeoMsg] = useState(""); // 디버그/상태 표시용
 
   // 주소 갱신
   const updateAddress = (kakao, lat, lng) => {

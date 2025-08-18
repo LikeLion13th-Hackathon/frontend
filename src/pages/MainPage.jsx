@@ -1,7 +1,6 @@
 // 메인페이지
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { Container, Page } from "../styles/MainPage.styles";
 import MainPageHeader from "../components/MainPage/MainPageHeader";
 import CharacterCard from "../components/MainPage/CharacterCard";

@@ -67,7 +67,7 @@ export const UploadButton = styled.div`
 `;
 
 // 모달창 스타일
-const ModalOverlay = styled.div`
+export const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -80,7 +80,7 @@ const ModalOverlay = styled.div`
   z-index: 999;
 `;
 
-const ModalContent = styled.div`
+export const ModalContent = styled.div`
   background: #fff;
   border-radius: 16px;
   padding: 2vh;
