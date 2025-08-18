@@ -42,18 +42,18 @@ export const Input = styled.input`
   border-radius: 14px;
   border: 1px solid #767676;
   &::placeholder {
-    color: #AEAEAE;
+    color: #aeaeae;
   }
 `;
 
 export const Select = styled.select`
   height: 40px;
-  line-height: 40px;  
+  line-height: 40px;
   padding: 0 10px;
   box-sizing: border-box;
 
   font-size: 12px;
-  color: #AEAEAE;
+  color: #aeaeae;
 
   border-radius: 14px;
   border: 1px solid #767676;
@@ -69,11 +69,10 @@ export const Select = styled.select`
   }
   &:disabled {
     opacity: 1;
-    -webkit-text-fill-color: #AEAEAE; 
+    -webkit-text-fill-color: #aeaeae;
     border: 1px solid #767676;
     cursor: not-allowed;
   }
-
 `;
 
 export const Row = styled.div`
@@ -93,19 +92,23 @@ export const SubmitButton = styled(Button)`
   color: white;
   z-index: 1000;
   box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const RadioGroup = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  justify-content: space-around;
+  gap: 2px;
   margin-top: 5px;
 `;
 
 export const RadioOption = styled.label`
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 2px;
   font-size: 14px;
   cursor: pointer;
 
@@ -119,7 +122,7 @@ export const RadioOption = styled.label`
   }
 
   input[type="radio"]:checked {
-    border: 5px solid #FACD2B;
+    border: 5px solid #facd2b;
   }
 `;
 
@@ -154,7 +157,7 @@ export const CheckboxOption = styled.label`
     left: 5px;
     width: 4px;
     height: 8px;
-    border: solid #FACD2B;
+    border: solid #facd2b;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
   }

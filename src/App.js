@@ -19,6 +19,7 @@ import ReceiptFail from "./components/MissionDetail/ReceiptFail";
 import Shop from "./pages/Shop";
 import LeaderBoard from "./pages/LeaderBoard";
 import MyPage from "./pages/MyPage";
+import MyPageEdit from "./pages/MyPageEdit";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
           <Route path="/shop" element={<Shop />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/mypage" element={<MyPage />} />
+          <Route path="/mypage/edit" element={<MyPageEdit />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
