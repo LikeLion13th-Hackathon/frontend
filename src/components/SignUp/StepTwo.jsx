@@ -16,57 +16,65 @@ import {
 import { useMemo } from "react";
 import InfoBox from "./InfoBox";
 
-  const JOBS = ["학생", "직장인", "프리랜서", "주부", "기타"];
+const JOBS = ["학생", "직장인", "프리랜서", "주부", "기타"];
 
-  const PLACES = [
-    "카페",
-    "식당",
-    "박물관/미술관",
-    "도서관",
-    "공원/산책로",
-    "운동 시설",
-    "쇼핑센터",
-    "전통 시장",
-    "기타",
-  ];
+const PLACES = [
+  "카페",
+  "식당",
+  "박물관/미술관",
+  "도서관",
+  "공원/산책로",
+  "운동 시설",
+  "쇼핑센터",
+  "전통 시장",
+  "기타",
+];
 
-  const ADDR = {
-    "서울특별시": {
-      "강남구": ["역삼동", "삼성동", "논현동"],
-      "종로구": ["청운동", "사직동", "부암동"],
-      "마포구": ["합정동", "서교동", "망원동"],
-    },
-    "부산광역시": {
-      "해운대구": ["우동", "중동", "좌동"],
-      "수영구": ["광안동", "민락동", "남천동"],
-      "중구": ["영주동", "대청동", "보수동"],
-    },
-    "대구광역시": {
-      "중구": ["동인동", "삼덕동", "남산동"],
-      "수성구": ["범어동", "만촌동", "두산동"],
-    },
-    "경기도": {
-      "수원시": ["인계동", "영통동", "매탄동"],
-      "성남시": ["분당동", "정자동", "야탑동"],
-      "고양시": ["일산동", "주교동", "덕이동"],
-    },
-  };
+const ADDR = {
+  서울특별시: {
+    강남구: ["역삼동", "삼성동", "논현동"],
+    종로구: ["청운동", "사직동", "부암동"],
+    마포구: ["합정동", "서교동", "망원동"],
+  },
+  부산광역시: {
+    해운대구: ["우동", "중동", "좌동"],
+    수영구: ["광안동", "민락동", "남천동"],
+    중구: ["영주동", "대청동", "보수동"],
+  },
+  대구광역시: {
+    중구: ["동인동", "삼덕동", "남산동"],
+    수성구: ["범어동", "만촌동", "두산동"],
+  },
+  경기도: {
+    수원시: ["인계동", "영통동", "매탄동"],
+    성남시: ["분당동", "정자동", "야탑동"],
+    고양시: ["일산동", "주교동", "덕이동"],
+  },
+};
 
 export default function StepTwo({
   job,
   setJob,
-  sido, setSido,
-  sigungu, setSigungu,
-  dong, setDong,
+  sido,
+  setSido,
+  sigungu,
+  setSigungu,
+  dong,
+  setDong,
   selectedPlaces,
   togglePlace,
   onSubmit,
   isValid,
 }) {
-
   const sidoList = useMemo(() => Object.keys(ADDR), []);
-  const sigunguList = useMemo(() => (sido ? Object.keys(ADDR[sido]) : []), [sido]);
-  const dongList = useMemo(() => (sido && sigungu ? ADDR[sido][sigungu] : []), [sido, sigungu]);
+  const sigunguList = useMemo(
+    () => (sido ? Object.keys(ADDR[sido]) : []),
+    [sido]
+  );
+  const dongList = useMemo(
+    () => (sido && sigungu ? ADDR[sido][sigungu] : []),
+    [sido, sigungu]
+  );
 
   return (
     <>
@@ -92,7 +100,9 @@ export default function StepTwo({
         </Field>
 
         <Field>
-          <Label>지역<Required>*</Required></Label>
+          <Label>
+            지역<Required>*</Required>
+          </Label>
           <Row>
             <Select
               required
@@ -105,7 +115,9 @@ export default function StepTwo({
             >
               <option value="">시/도</option>
               {sidoList.map((s) => (
-                <option key={s} value={s}>{s}</option>
+                <option key={s} value={s}>
+                  {s}
+                </option>
               ))}
             </Select>
 
@@ -120,7 +132,9 @@ export default function StepTwo({
             >
               <option value="">시/군/구</option>
               {sigunguList.map((g) => (
-                <option key={g} value={g}>{g}</option>
+                <option key={g} value={g}>
+                  {g}
+                </option>
               ))}
             </Select>
 
@@ -132,7 +146,9 @@ export default function StepTwo({
             >
               <option value="">읍/면/동</option>
               {dongList.map((d) => (
-                <option key={d} value={d}>{d}</option>
+                <option key={d} value={d}>
+                  {d}
+                </option>
               ))}
             </Select>
           </Row>
@@ -154,7 +170,8 @@ export default function StepTwo({
                   checked={selectedPlaces.includes(place)}
                   onChange={() => togglePlace(place)}
                   disabled={
-                    !selectedPlaces.includes(place) && selectedPlaces.length >= 3
+                    !selectedPlaces.includes(place) &&
+                    selectedPlaces.length >= 3
                   }
                 />
                 <span>{place}</span>
@@ -164,7 +181,7 @@ export default function StepTwo({
         </Field>
       </Form>
 
-      <InfoBox/>
+      <InfoBox />
 
       <SubmitButton onClick={onSubmit} disabled={!isValid}>
         다음으로

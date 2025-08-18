@@ -1,5 +1,5 @@
 // 마이페이지
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FiChevronRight } from "react-icons/fi";
@@ -22,18 +22,25 @@ import {
   SettingItem,
 } from "../styles/MyPage.styles";
 import Footer from "../components/Footer";
-// import { fetchMyProfile } from "../api/user";
+import { fetchMyProfile } from "../api/mypage";
 
 function MyPage() {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
 
-  // ‼️ API 대신 하드코딩된 사용자 정보 (명세서 나오면 바꾸기!)
-  const [user] = useState({
-    nickname: "테스트",
-    email: "test@test.com",
-    birthdate: "2000-01-01",
-    job: "학생",
-  });
+  // 유저 조회
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const data = await fetchMyProfile();
+        setUser(data);
+      } catch (err) {
+        console.error("프로필 불러오기 실패:", err);
+        toast.error("프로필을 불러오지 못했습니다.");
+      }
+    };
+    loadUser();
+  }, []);
 
   // 로그아웃
   const handleLogout = () => {
@@ -79,7 +86,7 @@ function MyPage() {
             <Value>{job}</Value>
           </InfoItem>
           <ChangeSection>
-            <ChangeText onClick={() => navigate("/mypage/edit-profile")}>
+            <ChangeText onClick={() => navigate("/mypage/edit")}>
               변경하기
             </ChangeText>
             <FiChevronRight style={{ color: "#767676", marginTop: "1.5px" }} />

@@ -18,6 +18,8 @@ import {
 import MapView from "../components/MapView";
 import { Button } from "../components/Button";
 import BbiBasic from "../assets/characters/bbi_basic.png";
+import BbiLoc from "../assets/characters/BbiLoc.png";
+
 import {
   ModalOverlay,
   ModalContent,
@@ -84,7 +86,7 @@ function MissionDetail() {
           <div style={{ position: "relative", width: "100%" }}>
             <MapView
               appKey={KAKAO_KEY}
-              markerSrc={BbiBasic}
+              markerSrc={BbiLoc}
               onAddressChange={({ address }) => setAddr(address)}
             />
             <LocationPill
@@ -156,6 +158,7 @@ function MissionDetail() {
               onClick={() => {
                 setStatus("ready");
                 setShowConfirm(false);
+                navigate("/mission");
               }}
             >
               포기하기

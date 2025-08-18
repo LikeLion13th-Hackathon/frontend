@@ -124,7 +124,7 @@ export default function MapView({
 
         geocoderRef.current = new kakao.maps.services.Geocoder();
 
-        const imageSize = new kakao.maps.Size(48, 48);
+        const imageSize = new kakao.maps.Size(80, 80);
         const imageOption = { offset: new kakao.maps.Point(24, 48) };
         const markerImage = markerSrc
           ? new kakao.maps.MarkerImage(markerSrc, imageSize, imageOption)
