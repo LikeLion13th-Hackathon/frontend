@@ -2,6 +2,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Coin from "../../assets/icons/coin.png";
+import { TbBrandGoogleAnalytics } from "react-icons/tb";
 import Setting from "../../assets/icons/setting.png";
 
 export const Header = styled.div`
@@ -31,6 +32,7 @@ export default function MainPageHeader() {
           <img src={Coin} width={22} style={{ marginTop: "2px" }} />
           <span style={{ fontWeight: 700, fontSize: 16 }}>1000</span>
         </Row>
+        {/* 나중에 통계 페이지 만들거면 <TbBrandGoogleAnalytics /> */}
         <img
           src={Setting}
           width={22}

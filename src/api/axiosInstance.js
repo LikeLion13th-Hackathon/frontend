@@ -14,14 +14,12 @@ instance.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
-  }
-  else {
+  } else {
     // 로그아웃 후 헤더 제거
     delete config.headers.Authorization;
   }
   return config;
 });
-
 
 // 공통 에러 처리
 instance.interceptors.response.use(
@@ -37,4 +35,3 @@ instance.interceptors.response.use(
 );
 
 export default instance;
-
