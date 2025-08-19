@@ -1,9 +1,14 @@
 import axios from "axios";
-import instance from "./axiosInstance";
 
 // 로그인
 export const login = async ({ email, password }) => {
-  const { data } = await instance.post("/api/auth/login", { email, password });
+  const { data } = await axios.post(
+    `${process.env.REACT_APP_API_URL}/api/auth/signup`,
+    { email, password },
+    {
+      headers: { "Content-Type": "application/json" },
+    }
+  );
   return data;
 };
 
