@@ -1,9 +1,9 @@
 // 영수증 스캔에 따른 성공/실패 여부 확인 페이지
-// OCR API 나오면 리팩토링 필요!!!!!!!!
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Header } from "../../styles/MyPage.styles";
 import ReceiptScan from "../../assets/icons/ReceiptScan.png";
+import { scanReceipt } from "../../api/ocr"; // OCR API 함수 (아직 백이랑 연동 안해서 실패임!!!!!!!)
 
 function ReceiptScanning() {
   const navigate = useNavigate();
@@ -11,17 +11,24 @@ function ReceiptScanning() {
   const image = location.state?.image;
 
   useEffect(() => {
-    // OCR 호출 시뮬레이션 (하드코딩!!!!!!!!!!!!!!!!!!!!!!!!!!1)
-    const timer = setTimeout(() => {
-      const success = Math.random() > 0.3; // 70% 성공 예시
-      if (success) {
-        navigate("/receipt/confirm", { state: { image } });
-      } else {
+    // OCR 호출 (실제 API 연동)
+    const processReceipt = async () => {
+      try {
+        const result = await scanReceipt(image); // OCR API 호출
+        if (result.store && result.date && result.total) {
+          // OCR 성공
+          navigate("/receipt/confirm", { state: { ...result, image } });
+        } else {
+          // OCR 실패
+          navigate("/receipt/fail");
+        }
+      } catch (err) {
+        console.error("OCR 에러:", err);
         navigate("/receipt/fail");
       }
-    }, 3000); // 3초 후 결과 표시
+    };
 
-    return () => clearTimeout(timer);
+    processReceipt();
   }, [navigate, image]);
 
   return (

@@ -23,9 +23,3 @@ export const signup = async (payload) => {
   );
   return data;
 };
-
-// 회원가입 혹시 이걸로?
-// export const signup = async (payload) => {
-//   const { data } = await instance.post("/api/auth/signup", payload);
-//   return data;
-// };

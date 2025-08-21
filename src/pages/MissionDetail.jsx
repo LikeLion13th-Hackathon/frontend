@@ -15,9 +15,9 @@ import {
   FieldTitle,
   FieldText,
 } from "../styles/MissionDetail.styles";
+import { MISSION_CATEGORY } from "../constants/missionCategory";
 import MapView from "../components/MapView";
 import { Button } from "../components/Button";
-import BbiBasic from "../assets/characters/bbi_basic.png";
 import BbiLoc from "../assets/characters/BbiLoc.png";
 
 import {
@@ -75,8 +75,16 @@ function MissionDetail() {
               {status === "inProgress" && (
                 <Badge style={{ backgroundColor: "#FF4E69" }}>진행 중</Badge>
               )}
-              <Badge>{mission.category}</Badge>
-              <Badge>영수증 인증</Badge>
+              <Badge
+                style={{
+                  backgroundColor:
+                    MISSION_CATEGORY[mission.category]?.badgeTextColor ||
+                    "#999",
+                }}
+              >
+                {mission.category}
+              </Badge>{" "}
+              <Badge style={{ color: "#808080" }}>영수증 인증</Badge>
             </TagGroup>
           </TagRow>
           <Title>{mission.title}</Title>

@@ -63,7 +63,8 @@ export default function MissionCard({
   badgeLabel,
   badgeTextColor,
   title,
-  points = 200,
+  points,
+  status,
   onClick,
 }) {
   const theme = (category && MISSION_CATEGORY[category]) || {};
@@ -73,6 +74,9 @@ export default function MissionCard({
 
   return (
     <Card onClick={onClick}>
+      {status === "inProgress" && (
+        <Badge style={{ backgroundColor: "#FF4E69" }}>진행 중</Badge>
+      )}
       <Media $src={bgSrc}>
         <Badge $text={badgeColorUse}>{label}</Badge>
       </Media>

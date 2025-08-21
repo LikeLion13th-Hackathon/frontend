@@ -20,6 +20,8 @@ import Shop from "./pages/Shop";
 import LeaderBoard from "./pages/LeaderBoard";
 import MyPage from "./pages/MyPage";
 import MyPageEdit from "./pages/MyPageEdit";
+import OngoingMissions from "./components/MyPage/OngoingMissions";
+import CompletedMissions from "./components/MyPage/CompletedMissions";
 
 function App() {
   return (
@@ -44,6 +46,8 @@ function App() {
           <Route path="/leaderboard" element={<LeaderBoard />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/mypage/edit" element={<MyPageEdit />} />
+          <Route path="/missions/ongoing" element={<OngoingMissions />} />
+          <Route path="/missions/completed" element={<CompletedMissions />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
