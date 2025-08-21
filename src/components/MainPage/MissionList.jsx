@@ -10,6 +10,7 @@ export default function MissionList({ items = [], onClick }) {
           image={m.image}
           title={m.title}
           points={m.points}
+          status={m.status}
           onClick={() => onClick && onClick(m.id)}
         />
       ))}

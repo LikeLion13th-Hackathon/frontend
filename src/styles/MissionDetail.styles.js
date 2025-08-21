@@ -41,8 +41,8 @@ export const Badge = styled.span`
   padding: 2px 10px;
   border-radius: 999px;
   font-size: 12px;
-  font-weight: 600;
-  border: 1px solid #e5e7eb;
+  color: white;
+  background-color: #ebf0f7;
 `;
 
 export const Title = styled.h3`
@@ -66,7 +66,7 @@ export const Divider = styled.hr`
 // 지도 영역
 export const LocationPill = styled.div`
   background-color: #efefef;
-  padding: 8px;
+  padding: 8px 14px;
   border-radius: 999px;
   box-shadow: 0 0px 6px rgba(0, 0, 0, 0.1);
   font-size: 12px;
