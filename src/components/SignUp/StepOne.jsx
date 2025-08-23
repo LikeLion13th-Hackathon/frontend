@@ -1,13 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
-  Form, 
-  Field, 
-  Label, 
-  Required, 
-  Input, 
-  Select, 
-  Row, 
+  Form,
+  Field,
+  Label,
+  Required,
+  Input,
+  Select,
+  Row,
   SubmitButton,
+  ErrorMessage
 } from "../../styles/SignUp.styles";
 import { AgreementWrapper } from "../../styles/AgreementSection.styles";
 import AgreementItem from "../SignUp/AgreementItem";
@@ -26,6 +27,9 @@ export default function StepOne({
 }) {
   const thisYear = new Date().getFullYear();
 
+  const [passwordError, setPasswordError] = useState("");
+  const [emailError, setEmailError] = useState("");
+
   const daysInMonth = (y, m) => new Date(Number(y), Number(m), 0).getDate(); // m: 1~12
   const dayCount = birthYear && birthMonth ? daysInMonth(birthYear, birthMonth) : 31;
 
@@ -35,6 +39,31 @@ export default function StepOne({
     const max = daysInMonth(birthYear, birthMonth);
     if (Number(birthDay) > max) setBirthDay(String(max).padStart(2, "0"));
   }, [birthYear, birthMonth, birthDay, setBirthDay]);
+
+  // 이메일 검사
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (value.length > 0 && !emailRegex.test(value)) {
+      setEmailError("이메일 형식으로 입력해 주세요.");
+    } else {
+      setEmailError("");
+    }
+  };
+
+  // 비밀번호 검사
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+
+    if (value.length > 0 && value.length < 8) {
+      setPasswordError("8글자 이상 입력해 주세요.");
+    } else {
+      setPasswordError("");
+    }
+  };
 
   return (
     <>
@@ -55,9 +84,9 @@ export default function StepOne({
         <Field>
           <Label>생년월일<Required>*</Required></Label>
           <Row>
-            <Select 
-              required 
-              value={birthYear} 
+            <Select
+              required
+              value={birthYear}
               onChange={(e) => setBirthYear(e.target.value)}
             >
               <option value="">출생연도</option>
@@ -66,9 +95,9 @@ export default function StepOne({
               ))}
             </Select>
 
-            <Select 
-              required 
-              value={birthMonth} 
+            <Select
+              required
+              value={birthMonth}
               onChange={(e) => setBirthMonth(e.target.value)}
               disabled={!birthYear}
             >
@@ -78,9 +107,9 @@ export default function StepOne({
               ))}
             </Select>
 
-            <Select 
-              required 
-              value={birthDay} 
+            <Select
+              required
+              value={birthDay}
               onChange={(e) => setBirthDay(e.target.value)}
               disabled={!birthMonth}
             >
@@ -99,10 +128,11 @@ export default function StepOne({
               id="email"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
               placeholder="이메일을 입력해주세요."
             />
           </Row>
+          {emailError && <ErrorMessage>{emailError}</ErrorMessage>}
         </Field>
 
         <Field>
@@ -112,10 +142,11 @@ export default function StepOne({
               id="password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               placeholder="비밀번호를 입력해주세요."
             />
           </Row>
+          {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}
         </Field>
       </Form>
 
@@ -158,8 +189,11 @@ export default function StepOne({
         </AgreementItem>
       </AgreementWrapper>
 
-      {/* Form 안에 버튼이면 기본 submit 막고 싶으면 type="button" 권장 */}
-      <SubmitButton type="button" onClick={onNext} disabled={!isValid}>
+      <SubmitButton
+        type="button"
+        onClick={onNext}
+        disabled={!isValid || !!passwordError || !!emailError}
+      >
         다음으로
       </SubmitButton>
     </>
