@@ -2,7 +2,17 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   min-height: 100vh;
-  padding-bottom: 60px;
+  padding-bottom: 90px;
+`;
+
+export const Title = styled.h3`
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  background: #FFFFFF;
+  padding: 0 0 18px;
+  text-align: center;
 `;
 
 export const Item = styled.div`
@@ -107,4 +117,44 @@ export const List = styled.ul`
 
 export const ListItem = styled.li`
   margin-bottom: 12px;
+`;
+
+export const Overlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: grid;
+  place-items: center;
+  z-index: 2000;
+`;
+
+export const ModalBox = styled.div`
+  width: min(500px, 92vw);
+  max-height: 80vh;
+  background: #fff;
+  border-radius: 15px;
+  padding: 16px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+`;
+
+export const ModalHeader = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 16px;
+`;
+
+export const CloseBtn = styled.button`
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+`;
+
+export const Empty = styled.div`
+  padding: 20px;
+  color: #777;
+  text-align: center;
 `;
