@@ -4,7 +4,7 @@ import { DecoBox, DecoTabs, DecoTabBtn } from "../../styles/Shop/DecoTab.styles"
 import { Panel } from "../../styles/Shop/Shop.styles";
 import ItemGrid from "./ItemGrid";
 
-export default function DecoTab({ coins, setCoins, bg, skin }) {
+export default function DecoTab({ coins, setCoins, reloadCoins, bg, skin }) {
   const [tab, setTab] = useState("BACKGROUND"); // BACKGROUND | CHARACTER
 
   const { items: bgItems, buy: buyBg, activate: activateBg } = bg;
@@ -18,8 +18,14 @@ export default function DecoTab({ coins, setCoins, bg, skin }) {
     onBuy: async (id, price) => {
       if (coins < price) return;
       setCoins(c => Math.max(0, c - price));
-      try { await buyFn(id); }
-      catch { setCoins(c => c + price); }
+      try { 
+        await buyFn(id);
+
+        reloadCoins?.(); 
+      }
+      catch { 
+        setCoins(c => c + price); 
+      }
     },
   });
 

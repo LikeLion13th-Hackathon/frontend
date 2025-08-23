@@ -76,7 +76,13 @@ export default function ShopPage() {
           setCoins={setCoins}
         />
       ) : (
-        <DecoTab coins={coins} setCoins={setCoins} bg={bg} skin={skin} />
+        <DecoTab 
+          coins={coins}
+          setCoins={setCoins}
+          reloadCoins={reloadCoins}
+          bg={bg}
+          skin={skin} 
+        />
       )}
       <Footer />
     </Page>
