@@ -1,10 +1,11 @@
 // 영수증 업로드 페이지
 import styled from "styled-components";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Header, BackIcon } from "../../styles/MyPage.styles";
 import Footer from "../Footer";
 import ReceiptEx from "../../assets/icons/ReceiptEx.png";
+import { uploadReceipt } from "../../api/receipt";
 
 // 스타일
 export const Container = styled.div`
@@ -91,21 +92,37 @@ export const ModalContent = styled.div`
 
 function ReceiptUpload() {
   const navigate = useNavigate();
+  const { missionId } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [file, setFile] = useState(null);
 
   const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
+    const f = e.target.files[0];
+    if (f) {
+      setFile(f);
+      const url = URL.createObjectURL(f);
       setPreviewUrl(url);
+    }
+  };
+
+  // 영수증 업로드 후 이동
+  const handleScan = async () => {
+    try {
+      const res = await uploadReceipt(missionId, file);
+      navigate("/receipt/scanning", {
+        state: { missionId, receiptId: res.receiptId },
+      });
+    } catch (err) {
+      console.error("영수증 업로드 실패:", err);
+      alert("영수증 업로드 중 오류가 발생했습니다.");
     }
   };
 
   return (
     <div style={{ padding: "2vh", paddingTop: "1vh" }}>
       <Header>
-        <BackIcon size={20} onClick={() => navigate(-1)} />
+        <BackIcon size={20} onClick={() => navigate(`/mission/${missionId}`)} />
         <h3>영수증 인증</h3>
       </Header>
 
@@ -189,12 +206,8 @@ function ReceiptUpload() {
                   fontWeight: "bold",
                   cursor: "pointer",
                 }}
-                onClick={() => {
-                  // 스캔 페이지로 이동
-                  navigate("/receipt/scanning", {
-                    state: { image: previewUrl },
-                  });
-                }}
+                onClick={handleScan}
+                disabled={!file}
               >
                 영수증 스캔
               </button>

@@ -15,7 +15,7 @@ import MainLogo from "../assets/characters/Logo.png";
 import { login } from "../api/auth";
 
 function Login() {
-  // 모달창, 로그인 입력 여부 관리
+  // 로그인 입력 여부 관리
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -23,6 +23,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e?.preventDefault?.();
 
+    // 로그인 API
     try {
       const res = await login({ email, password });
       const {
@@ -34,26 +35,25 @@ function Login() {
         message,
       } = res?.data ?? res ?? {};
 
-      // 필요하면 사용자 정보 저장
+      // 사용자 정보 저장
       localStorage.setItem(
         "user",
-        JSON.stringify({ userId, nickname, email: userEmail })
+        JSON.stringify({ userId, nickname, userEmail })
       );
-
       if (accessToken) localStorage.setItem("token", accessToken);
       if (tokenType) localStorage.setItem("tokenType", tokenType);
 
-      toast.success(message || "로그인 성공!", {
-        autoClose: 2000,
-        hideProgressBar: true,
-      });
+      // 성공 후 메인페이지로 이동
+      toast.success(message, { autoClose: 2000 });
+      navigate("/mainpage");
 
-      setTimeout(() => {
-        navigate("/mainpage");
-      }, 100);
+      // 실패
     } catch (error) {
-      toast.error("아이디/비밀번호가 맞지 않습니다.", { autoClose: 2000 });
-      console.error("❌ 로그인 에러:", error);
+      if (error.response?.status === 401) {
+        toast.error("아이디/비밀번호가 맞지 않습니다.");
+      } else {
+        toast.error("서버와 연결할 수 없습니다. 잠시 후 다시 시도해주세요.");
+      }
     }
   };
 

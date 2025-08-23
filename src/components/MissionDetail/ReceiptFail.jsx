@@ -1,9 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { InfoText } from "./ReceiptUpload";
 import { Button } from "../Button";
 
 function ReceiptFail() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const missionId = location.state?.missionId;
 
   return (
     <div
@@ -28,7 +30,9 @@ function ReceiptFail() {
           borderRadius: "999px",
           boxShadow: "0 4px 11px rgba(0, 0, 0, 0.25)",
         }}
-        onClick={() => navigate("/receipt/upload")}
+        onClick={() =>
+          navigate(`/receipt/upload/${missionId}`, { state: { missionId } })
+        }
       >
         영수증 재업로드하러 가기
       </Button>

@@ -1,5 +1,6 @@
+// 미션 상세페이지
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Header, BackIcon } from "../styles/MyPage.styles";
 import {
   Container,
@@ -19,52 +20,92 @@ import { MISSION_CATEGORY } from "../constants/missionCategory";
 import MapView from "../components/MapView";
 import { Button } from "../components/Button";
 import BbiLoc from "../assets/characters/BbiLoc.png";
-
 import {
   ModalOverlay,
   ModalContent,
 } from "../components/MissionDetail/ReceiptUpload";
+import {
+  fetchCustomMissionDetail,
+  fetchRestaurantMissionDetail,
+  fetchLandmarkMissionDetail,
+  fetchSpecialtyMissionDetail,
+  startMission,
+  completeMission,
+  abandonMission,
+} from "../api/mission";
+
+// 상태 정규화 함수
+const normalizeStatus = (status) => {
+  switch (status) {
+    case "READY":
+      return "ready";
+    case "IN_PROGRESS":
+      return "inprogress";
+    case "COMPLETED":
+      return "completed";
+    case "ABANDONED":
+      return "abandoned";
+    default:
+      return "ready";
+  }
+};
 
 function MissionDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const location = useLocation();
   const [mission, setMission] = useState(null);
   const [addr, setAddr] = useState("");
-  const [status, setStatus] = useState("ready"); // 미션 진행 상태
+  const [status, setStatus] = useState("ready");
   const [showConfirm, setShowConfirm] = useState(false);
   const KAKAO_KEY = process.env.REACT_APP_KAKAO_MAP_KEY?.trim() || "";
 
-  // 임시: 나중에는 API 연동!!!!!!!!!
+  const category = location.state?.category || "CUSTOM";
+
+  // 미션 상세 불러오기
   useEffect(() => {
-    const mockMissions = [
-      {
-        id: "1",
-        category: "맞춤미션",
-        title: "00동 음식점에서 7000원 이상 결제하기",
-        method: "00동 음식점에서 7000원 이상 결제 후, 영수증 인증하기",
-        period: "2025.08.01 ~ 08.15",
-        reward: "200코인 지급",
-      },
-      {
-        id: "2",
-        category: "지역명소",
-        title: "ㅁㅁ구 박물관 방문하기",
-        method: "박물관 입장 후 인증샷 업로드",
-        period: "2025.08.05 ~ 08.20",
-        reward: "300코인 지급",
-      },
-    ];
+    const loadMission = async () => {
+      try {
+        const fetchers = {
+          CUSTOM: fetchCustomMissionDetail,
+          맞춤미션: fetchCustomMissionDetail,
+          RESTAURANT: fetchRestaurantMissionDetail,
+          지역맛집: fetchRestaurantMissionDetail,
+          LANDMARK: fetchLandmarkMissionDetail,
+          지역명소: fetchLandmarkMissionDetail,
+          SPECIALTY: fetchSpecialtyMissionDetail,
+          특산품: fetchSpecialtyMissionDetail,
+        };
 
-    const found = mockMissions.find((m) => m.id === id);
-    setMission(found || null);
-  }, [id]);
+        const fetcher = fetchers[category];
+        if (!fetcher) return console.error("Unknown category:", category);
+        const data = await fetcher(id);
 
-  if (!mission) return <div>아직 더미데이터라 추가안함</div>;
+        const normalized = normalizeStatus(data.status);
+        setMission({
+          id: data.missionId,
+          apiCategory: data.category,
+          category: MISSION_CATEGORY[data.category]?.label || data.category,
+          title: data.title,
+          method: data.description,
+          period: `${data.startDate} ~ ${data.endDate}`,
+          reward: `${data.rewardPoint} 코인 지급`,
+          status: normalized,
+        });
+        setStatus(normalized);
+      } catch (err) {
+        console.error("미션 상세 불러오기 실패:", err);
+      }
+    };
+    loadMission();
+  }, [id, category]);
+
+  if (!mission) return <div>미션 정보를 불러오는 중...</div>;
 
   return (
     <div style={{ padding: "2vh", paddingTop: "1vh" }}>
       <Header>
-        <BackIcon size={20} onClick={() => navigate(-1)} />
+        <BackIcon size={20} onClick={() => navigate("/mission")} />
         <h3>미션</h3>
       </Header>
 
@@ -72,18 +113,25 @@ function MissionDetail() {
         <Card>
           <TagRow>
             <TagGroup>
-              {status === "inProgress" && (
+              {status === "inprogress" && (
                 <Badge style={{ backgroundColor: "#FF4E69" }}>진행 중</Badge>
+              )}
+              {status === "completed" && (
+                <Badge style={{ backgroundColor: "#4CAF50" }}>완료됨</Badge>
+              )}
+              {status === "abandoned" && (
+                <Badge style={{ backgroundColor: "#999" }}>포기됨</Badge>
               )}
               <Badge
                 style={{
                   backgroundColor:
-                    MISSION_CATEGORY[mission.category]?.badgeTextColor ||
+                    MISSION_CATEGORY[mission.apiCategory]?.badgeTextColor ||
                     "#999",
                 }}
               >
-                {mission.category}
-              </Badge>{" "}
+                {MISSION_CATEGORY[mission.apiCategory]?.label ||
+                  mission.apiCategory}
+              </Badge>
               <Badge style={{ color: "#808080" }}>영수증 인증</Badge>
             </TagGroup>
           </TagRow>
@@ -125,35 +173,62 @@ function MissionDetail() {
           </Section>
         </Card>
 
+        {/* 버튼 영역 */}
         {status === "ready" && (
           <Button
             style={{ width: "100%" }}
-            onClick={() => setStatus("inProgress")}
+            onClick={async () => {
+              try {
+                const updated = await startMission(id);
+                const newStatus = normalizeStatus(updated.status);
+                setMission({ ...mission, status: newStatus });
+                setStatus(newStatus);
+              } catch (err) {
+                console.error("미션 시작 실패:", err);
+              }
+            }}
           >
             미션 시작하기
           </Button>
         )}
 
-        {status === "inProgress" && (
+        {status === "inprogress" && (
           <>
             <Button
               style={{ width: "100%" }}
-              onClick={() => navigate("/receipt/upload")}
+              onClick={() => {
+                if (!mission?.id) {
+                  console.error("missionId 없음:", mission);
+                  alert("미션 ID를 불러오는 중입니다. 다시 시도해주세요.");
+                  return;
+                }
+                navigate(`/receipt/upload/${mission.id}`);
+              }}
             >
-              영수증 인증하기
+              영수증 인증하기(api 고쳐야댐)
             </Button>
             <Button
-              style={{
-                width: "100%",
-                backgroundColor: "#FF4E69",
-              }}
-              onClick={() => {
-                setShowConfirm(true);
-              }}
+              style={{ width: "100%", backgroundColor: "#FF4E69" }}
+              onClick={() => setShowConfirm(true)}
             >
               미션 포기
             </Button>
           </>
+        )}
+
+        {status === "completed" && (
+          <Button
+            style={{ width: "100%", backgroundColor: "#4CAF50" }}
+            disabled
+          >
+            완료된 미션
+          </Button>
+        )}
+
+        {status === "abandoned" && (
+          <Button style={{ width: "100%", backgroundColor: "#999" }} disabled>
+            포기한 미션
+          </Button>
         )}
       </Container>
 
@@ -163,10 +238,17 @@ function MissionDetail() {
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <h4 style={{ margin: "20px" }}>정말 미션을 포기하시겠어요?</h4>
             <Button
-              onClick={() => {
-                setStatus("ready");
-                setShowConfirm(false);
-                navigate("/mission");
+              onClick={async () => {
+                try {
+                  const updated = await abandonMission(id);
+                  const newStatus = normalizeStatus(updated.status);
+                  setMission({ ...mission, status: newStatus });
+                  setStatus(newStatus);
+                  setShowConfirm(false);
+                  navigate("/mission");
+                } catch (err) {
+                  console.error("미션 포기 실패:", err);
+                }
               }}
             >
               포기하기

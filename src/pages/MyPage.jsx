@@ -45,14 +45,15 @@ function MyPage() {
   // 로그아웃
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("tokenType");
     localStorage.removeItem("user");
     toast.success("정상적으로 로그아웃되었습니다.", { autoClose: 2000 });
     navigate("/login");
   };
 
-  if (!user) return <div>Loading...</div>;
+  if (!user) return <div>로딩 중...</div>;
 
-  const { nickname, email, birthdate, job } = user;
+  const { nickname, email, birthDate, job } = user;
 
   return (
     <>
@@ -79,7 +80,7 @@ function MyPage() {
           </InfoItem>
           <InfoItem>
             <Label>생년월일</Label>
-            <Value>{birthdate}</Value>
+            <Value>{birthDate}</Value>
           </InfoItem>
           <InfoItem>
             <Label>직업</Label>
@@ -97,10 +98,10 @@ function MyPage() {
 
         <Section>
           <SectionTitle>미션 관리</SectionTitle>
-          <SettingItem>
+          <SettingItem onClick={() => navigate("/missions/ongoing")}>
             진행 중인 미션 <FiChevronRight />
           </SettingItem>
-          <SettingItem>
+          <SettingItem onClick={() => navigate("/missions/completed")}>
             완료한 미션 <FiChevronRight />
           </SettingItem>
 
