@@ -65,8 +65,8 @@ function Home() {
                 src={slide.img}
                 style={{
                   maxWidth: "100%",
-                  maxHeight: "100%",
-                  objectFit: "contain",
+                  height: "auto",
+                  maxHeight: "70vh",
                 }}
               />
             </div>
