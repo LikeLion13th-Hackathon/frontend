@@ -3,37 +3,36 @@ import { useNavigate } from "react-router-dom";
 import { Header, BackIcon } from "../../styles/MyPage.styles";
 import MissionList from "../../components/MainPage/MissionList";
 import { InfoText } from "../MissionDetail/ReceiptUpload";
+import { fetchMyProfile } from "../../api/mypage";
 
 function OngoingMissions() {
   const navigate = useNavigate();
   const [missions, setMissions] = useState([]);
 
   useEffect(() => {
-    // 더미데이터
-    const dummy = [
-      {
-        id: 1,
-        category: "지역맛집",
-        title: "더미데이터",
-        points: 100,
-        status: "ready",
-      },
-      {
-        id: 2,
-        category: "지역명소",
-        title: "더미2",
-        points: 300,
-        status: "ready",
-      },
-    ];
-    setMissions(dummy);
+    const loadMissions = async () => {
+      try {
+        const data = await fetchMyProfile();
+        const mapped = (data.ongoingMissions || []).map((title, idx) => ({
+          id: idx + 1, // 실제 id가 없으니 index로 대체
+          category: "진행 중", // 카테고리 정보가 없어서 임시값
+          title,
+          points: 0, // API에서 포인트 안 주면 0으로
+          status: "inprogress",
+        }));
+        setMissions(mapped);
+      } catch (err) {
+        console.error("진행 중 미션 불러오기 실패:", err);
+      }
+    };
+    loadMissions();
   }, []);
 
   return (
     <>
       <div style={{ padding: "2vh", paddingTop: "1vh", paddingBottom: "0" }}>
         <Header>
-          <BackIcon size={20} onClick={() => navigate(-1)} />
+          <BackIcon size={20} onClick={() => navigate("/mypage")} />
           <h3>진행 중인 미션</h3>
         </Header>
       </div>

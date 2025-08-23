@@ -3,33 +3,34 @@ import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Header } from "../../styles/MyPage.styles";
 import ReceiptScan from "../../assets/icons/ReceiptScan.png";
-import { scanReceipt } from "../../api/ocr"; // OCR API 함수 (아직 백이랑 연동 안해서 실패임!!!!!!!)
+import { checkReceiptOCR } from "../../api/ocr";
 
 function ReceiptScanning() {
   const navigate = useNavigate();
   const location = useLocation();
-  const image = location.state?.image;
+  const { missionId, receiptId } = location.state || {};
 
   useEffect(() => {
-    // OCR 호출 (실제 API 연동)
     const processReceipt = async () => {
       try {
-        const result = await scanReceipt(image); // OCR API 호출
-        if (result.store && result.date && result.total) {
-          // OCR 성공
-          navigate("/receipt/confirm", { state: { ...result, image } });
+        const result = await checkReceiptOCR(missionId, receiptId);
+
+        if (result.verificationStatus === "MATCHED") {
+          navigate("/receipt/confirm", { state: result });
+        } else if (result.verificationStatus === "REJECTED") {
+          navigate("/receipt/fail", { state: { missionId } });
         } else {
-          // OCR 실패
-          navigate("/receipt/fail");
+          // 아직 OCR PENDING이나 RUNNING이면 대기 화면 유지
+          setTimeout(processReceipt, 2000); // 2초 후 재시도 (polling)
         }
       } catch (err) {
         console.error("OCR 에러:", err);
-        navigate("/receipt/fail");
+        navigate("/receipt/fail", { state: { missionId } });
       }
     };
 
     processReceipt();
-  }, [navigate, image]);
+  }, [missionId, receiptId, navigate]);
 
   return (
     <div

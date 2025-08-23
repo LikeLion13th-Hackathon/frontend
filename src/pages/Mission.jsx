@@ -6,6 +6,13 @@ import LocationBar from "../components/Mission/LocationBar";
 import MissionList from "../components/MainPage/MissionList";
 import { InfoText } from "../components/MissionDetail/ReceiptUpload";
 import Footer from "../components/Footer";
+import { MISSION_CATEGORY } from "../constants/missionCategory";
+import {
+  fetchCustomMissions,
+  fetchRestaurantMissions,
+  fetchLandmarkMissions,
+  fetchSpecialtyMissions,
+} from "../api/mission";
 
 export default function Mission() {
   const navigate = useNavigate();
@@ -13,47 +20,47 @@ export default function Mission() {
   const [activeTab, setActiveTab] = useState("전체");
   const [location, setLocation] = useState("위치 확인 중…");
 
-  useEffect(() => {
-    // 미션 목록: 나중에 API 연결!!!!!!!!!!
-    setMissions([
-      {
-        id: "1",
-        category: "맞춤미션",
-        title: "00동 음식점에서 7000원 이상 결제하기",
-        points: 100,
-        status: "ready",
-      },
-      {
-        id: "2",
-        category: "지역명소",
-        title: "ㅁㅁ구 박물관 방문하기",
-        points: 300,
-        status: "ready",
-      },
-      {
-        id: "3",
-        category: "기타",
-        title: "기타 기타 기타",
-        points: 500,
-        status: "ready",
-      },
-      {
-        id: "4",
-        category: "지역명소",
-        title: "산책로에서 사진 찍기",
-        points: 150,
-        status: "ready",
-      },
-      {
-        id: "5",
-        category: "맞춤미션",
-        title: "asdfasdf",
-        points: 150,
-        status: "ready",
-      },
-    ]);
+  // API에서 불러온 카테고리 매핑
+  const mapMission = (m) => {
+    const categoryInfo = MISSION_CATEGORY[m.category] || MISSION_CATEGORY.ETC;
+    return {
+      id: m.missionId,
+      category: categoryInfo.label,
+      image: m.imageUrl || categoryInfo.image,
+      title: m.title,
+      points: m.rewardPoint,
+      status: m.status?.toLowerCase() || "ready",
+    };
+  };
 
-    // 사용자 위치 가져오기 (카카오맵 API)
+  // 모든 미션 불러오기
+  useEffect(() => {
+    const loadAllMissions = async () => {
+      try {
+        const [custom, restaurants, landmarks, specialties] = await Promise.all(
+          [
+            fetchCustomMissions(),
+            fetchRestaurantMissions(),
+            fetchLandmarkMissions(),
+            fetchSpecialtyMissions(),
+          ]
+        );
+
+        const combined = [
+          ...(custom || []).map(mapMission),
+          ...(restaurants || []).map(mapMission),
+          ...(landmarks || []).map(mapMission),
+          ...(specialties || []).map(mapMission),
+        ];
+
+        setMissions(combined);
+      } catch (err) {
+        console.error("미션 불러오기 실패:", err);
+      }
+    };
+    loadAllMissions();
+
+    // 위치 가져오기 (카카오맵 API)
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -73,15 +80,13 @@ export default function Mission() {
     }
   }, []);
 
+  // 카테고리 (탭 구분)
   const categories = [
     "전체",
-    "맞춤미션",
-    "지역명소",
-    "지역맛집",
-    "특산품",
-    "기타",
+    ...Object.values(MISSION_CATEGORY).map((c) => c.label),
   ];
 
+  // 탭별 필터링
   const filteredMissions =
     activeTab === "전체"
       ? missions
@@ -109,10 +114,20 @@ export default function Mission() {
 
       {/* 미션 목록 */}
       <div style={{ padding: "2vh", paddingBottom: "12vh" }}>
-        <MissionList
-          items={filteredMissions}
-          onClick={(id) => navigate(`/mission/${id}`)}
-        />
+        {filteredMissions.length > 0 ? (
+          <MissionList
+            items={filteredMissions}
+            onClick={(id) => {
+              const selected = missions.find((m) => m.id === id);
+              navigate(`/mission/${id}`, {
+                state: { category: selected.apiCategory },
+              });
+            }}
+          />
+        ) : (
+          <p style={{ textAlign: "center", color: "#888" }}>미션이 없습니다.</p>
+        )}
+
         <InfoText style={{ marginTop: "5vh" }}>
           작은 소비가 모여 우리 동네를 깨워요.
         </InfoText>

@@ -1,6 +1,7 @@
-// 마이페이지 - 내 정보 수정
-import { useState } from "react";
+// 마이페이지 수정
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { Header, BackIcon } from "../styles/MyPage.styles";
 import {
   Wrapper,
@@ -14,41 +15,87 @@ import {
   RadioGroup,
   RadioOption,
   CheckboxOption,
-  LimitBadge,
 } from "../styles/SignUp.styles";
-import { signup } from "../api/auth"; // !!!!!!!!!! 실제 수정 API로 교체 필요
+import { fetchMyProfile, updateMyProfile } from "../api/mypage";
+
+// 백-프론트 매핑
+const PLACE_MAP = {
+  CAFE: "카페",
+  RESTAURANT: "식당",
+  MUSEUM: "박물관/미술관",
+  LIBRARY: "도서관",
+  PARK: "공원/산책로",
+  GYM: "운동 시설",
+  SHOPPING_MALL: "쇼핑센터",
+  MARKET: "전통 시장",
+  OTHER: "기타",
+};
+const REVERSE_PLACE_MAP = Object.fromEntries(
+  Object.entries(PLACE_MAP).map(([code, label]) => [label, code])
+);
+
+const REGIONS = {
+  서울특별시: {
+    강남구: ["삼성동", "역삼동"],
+    서대문구: ["북가좌동", "남가좌동"],
+  },
+  인천광역시: {
+    부평구: ["부평동", "삼산동"],
+  },
+};
 
 export default function MyPageEdit() {
   const navigate = useNavigate();
 
-  // 사용자 기본 정보 (초기값은 API 연동 시 서버 데이터로 채우면 됨)
-  const [name, setName] = useState("사용자명");
+  const [name, setName] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [birthMonth, setBirthMonth] = useState("");
   const [birthDay, setBirthDay] = useState("");
-  const [email, setEmail] = useState("사용자메일");
-  const [job, setJob] = useState("사용자직업");
-
-  const [sido, setSido] = useState("인천광역시");
-  const [sigungu, setSigungu] = useState("부평구");
-  const [dong, setDong] = useState("부평동");
-
-  const [selectedPlaces, setSelectedPlaces] = useState(["카페"]);
+  const [job, setJob] = useState("");
+  const [sido, setSido] = useState("");
+  const [sigungu, setSigungu] = useState("");
+  const [dong, setDong] = useState("");
+  const [selectedPlaces, setSelectedPlaces] = useState([]);
 
   // 현재 연도 & 선택한 연/월에 맞는 일 수 계산
   const thisYear = new Date().getFullYear();
   const dayCount =
     birthYear && birthMonth ? new Date(birthYear, birthMonth, 0).getDate() : 31;
 
+  // 프로필 불러오기
+  useEffect(() => {
+    const load = async () => {
+      const data = await fetchMyProfile();
+      setName(data.nickname || "");
+      setJob(data.job || "");
+      setSido(data.regionSido || "");
+      setSigungu(data.regionGungu || "");
+      setDong(data.regionDong || "");
+      if (data.birthDate) {
+        const [y, m, d] = data.birthDate.split("-");
+        setBirthYear(y);
+        setBirthMonth(m);
+        setBirthDay(d);
+      }
+      setSelectedPlaces(
+        (data.preferPlaces || []).map((code) => PLACE_MAP[code] || code)
+      );
+    };
+    load();
+  }, []);
+
+  // 선호 장소 선택 토글
   const togglePlace = (place) => {
     setSelectedPlaces((prev) => {
       if (prev.includes(place)) {
-        // 이미 선택되어 있으면 해제
         return prev.filter((p) => p !== place);
       } else {
-        // 새로 선택하려는데 이미 3개면 추가 막기
         if (prev.length >= 3) {
-          alert("최대 3곳까지만 선택할 수 있습니다.");
+          // ✅ 중복 실행 방지 → toast는 한 번만 뜨도록
+          toast.warn("최대 3곳까지만 선택할 수 있습니다.", {
+            toastId: "max-places",
+            autoClose: 2000,
+          });
           return prev;
         }
         return [...prev, place];
@@ -56,10 +103,9 @@ export default function MyPageEdit() {
     });
   };
 
+  // 제출
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const [pref1, pref2, pref3] = [...selectedPlaces, "", "", ""].slice(0, 3);
-
     const birthDate =
       birthYear && birthMonth && birthDay
         ? `${birthYear}-${birthMonth.padStart(2, "0")}-${birthDay.padStart(
@@ -70,24 +116,23 @@ export default function MyPageEdit() {
 
     const payload = {
       nickname: name,
-      email,
       birthDate,
-      sido,
-      sigungu,
-      dong,
-      role: job,
-      pref1,
-      pref2,
-      pref3,
+      job,
+      regionSido: sido,
+      regionGungu: sigungu,
+      regionDong: dong,
+      preferPlaces: selectedPlaces.map((label) => REVERSE_PLACE_MAP[label]),
     };
 
     try {
-      await signup(payload); // TODO: 회원가입 대신 '정보수정 API'로 교체
-      alert("정보가 수정되었습니다!");
+      await updateMyProfile(payload);
+      toast.success("정보가 수정되었습니다!", { autoClose: 2000 });
       navigate("/mypage");
     } catch (err) {
       console.error("정보 수정 실패:", err);
-      alert("수정에 실패했습니다. 다시 시도해주세요.");
+      toast.error("수정에 실패했습니다. 다시 시도해주세요.", {
+        autoClose: 2000,
+      });
     }
   };
 
@@ -118,7 +163,6 @@ export default function MyPageEdit() {
         <Field>
           <Label>생년월일</Label>
           <Row>
-            {/* 연도 */}
             <Select
               value={birthYear}
               onChange={(e) => setBirthYear(e.target.value)}
@@ -130,8 +174,6 @@ export default function MyPageEdit() {
                 </option>
               ))}
             </Select>
-
-            {/* 월 */}
             <Select
               value={birthMonth}
               onChange={(e) => setBirthMonth(e.target.value)}
@@ -146,8 +188,6 @@ export default function MyPageEdit() {
                 </option>
               ))}
             </Select>
-
-            {/* 일 */}
             <Select
               value={birthDay}
               onChange={(e) => setBirthDay(e.target.value)}
@@ -162,20 +202,6 @@ export default function MyPageEdit() {
                 </option>
               ))}
             </Select>
-          </Row>
-        </Field>
-
-        {/* 이메일 */}
-        <Field>
-          <Label>이메일</Label>
-          <Row>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="이메일을 입력해주세요."
-            />
           </Row>
         </Field>
 
@@ -200,51 +226,77 @@ export default function MyPageEdit() {
         <Field>
           <Label>지역</Label>
           <Row>
-            <Select value={sido} onChange={(e) => setSido(e.target.value)}>
-              <option value="인천광역시">인천광역시</option>
-              <option value="서울특별시">서울특별시</option>
+            <Select
+              value={sido}
+              onChange={(e) => {
+                setSido(e.target.value);
+                setSigungu("");
+                setDong("");
+              }}
+            >
+              <option value="">시/도 선택</option>
+              {Object.keys(REGIONS).map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
             </Select>
+
             <Select
               value={sigungu}
-              onChange={(e) => setSigungu(e.target.value)}
+              onChange={(e) => {
+                setSigungu(e.target.value);
+                setDong("");
+              }}
+              disabled={!sido}
             >
-              <option value="부평구">부평구</option>
-              <option value="강남구">강남구</option>
+              <option value="">구/군 선택</option>
+              {sido &&
+                Object.keys(REGIONS[sido]).map((g) => (
+                  <option key={g} value={g}>
+                    {g}
+                  </option>
+                ))}
             </Select>
-            <Select value={dong} onChange={(e) => setDong(e.target.value)}>
-              <option value="부평동">부평동</option>
-              <option value="삼성동">삼성동</option>
+
+            <Select
+              value={dong}
+              onChange={(e) => setDong(e.target.value)}
+              disabled={!sigungu}
+            >
+              <option value="">동 선택</option>
+              {sido &&
+                sigungu &&
+                REGIONS[sido][sigungu].map((d) => (
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
+                ))}
             </Select>
           </Row>
         </Field>
 
         {/* 선호 장소 */}
         <Field>
-          <Label>선호 장소(3개)</Label>
+          <Label>선호 장소 (최대 3개)</Label>
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "20px 2px",
+              gap: "12px 4px",
               marginBottom: "5vh",
             }}
           >
-            {[
-              "카페",
-              "식당",
-              "박물관/미술관",
-              "도서관",
-              "공원/산책로",
-              "운동 시설",
-              "쇼핑센터",
-              "전통 시장",
-              "기타",
-            ].map((place) => (
-              <CheckboxOption style={{ gap: "1px" }} key={place}>
+            {Object.values(PLACE_MAP).map((place) => (
+              <CheckboxOption key={place}>
                 <input
                   type="checkbox"
                   checked={selectedPlaces.includes(place)}
                   onChange={() => togglePlace(place)}
+                  disabled={
+                    !selectedPlaces.includes(place) &&
+                    selectedPlaces.length >= 3
+                  }
                 />
                 {place}
               </CheckboxOption>

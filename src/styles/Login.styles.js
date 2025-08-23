@@ -19,7 +19,7 @@ export const TitleSmall = styled.p`
 `;
 
 export const Input = styled.input`
-  width: 75vw;
+  width: 80vw;
   max-width: 360px;
   height: 7vh;
   padding: 2vh;

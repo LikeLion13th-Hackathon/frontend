@@ -37,7 +37,7 @@ function App() {
           <Route path="/mainpage" element={<MainPage />} />
           <Route path="/mission" element={<Mission />} />
           <Route path="/mission/:id" element={<MissionDetail />} />
-          <Route path="/receipt/upload" element={<ReceiptUpload />} />
+          <Route path="/receipt/upload/:missionId" element={<ReceiptUpload />} />
           <Route path="/receipt/scanning" element={<ReceiptScanning />} />
           <Route path="/receipt/confirm" element={<ReceiptConfirm />} />
           <Route path="/receipt/success" element={<ReceiptSuccess />} />
