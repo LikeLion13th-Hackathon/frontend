@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   Form,
   Field,
   Label,
   Required,
   Input,
-  Select,
   Row,
   SubmitButton,
   ErrorMessage
@@ -14,6 +13,7 @@ import { AgreementWrapper } from "../../styles/AgreementSection.styles";
 import AgreementItem from "../SignUp/AgreementItem";
 import terms from "../../assets/policies/terms.json";
 import TermsContent from "./TermsContent";
+import Select from "../Select";
 
 export default function StepOne({
   name, setName,
@@ -39,6 +39,22 @@ export default function StepOne({
     const max = daysInMonth(birthYear, birthMonth);
     if (Number(birthDay) > max) setBirthDay(String(max).padStart(2, "0"));
   }, [birthYear, birthMonth, birthDay, setBirthDay]);
+
+  const yearOptions = useMemo(
+    () => Array.from({ length: 100 }, (_, i) => thisYear - i)
+               .map((y) => ({ value: String(y), label: String(y) })),
+    [thisYear]
+  );
+  const monthOptions = useMemo(
+    () => Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0"))
+               .map((m) => ({ value: m, label: m })),
+    []
+  );
+  const dayOptions = useMemo(
+    () => Array.from({ length: dayCount }, (_, i) => String(i + 1).padStart(2, "0"))
+               .map((d) => ({ value: d, label: d })),
+    [dayCount]
+  );
 
   // 이메일 검사
   const handleEmailChange = (e) => {
@@ -85,39 +101,29 @@ export default function StepOne({
           <Label>생년월일<Required>*</Required></Label>
           <Row>
             <Select
-              required
-              value={birthYear}
-              onChange={(e) => setBirthYear(e.target.value)}
-            >
-              <option value="">출생연도</option>
-              {Array.from({ length: 100 }, (_, i) => thisYear - i).map((y) => (
-                <option key={y} value={y}>{y}</option>
-              ))}
-            </Select>
-
+              placeholder="출생연도"
+              options={yearOptions}
+              value={birthYear ? { value: birthYear, label: birthYear } : null}
+              onChange={(opt) => {
+                setBirthYear(opt?.value || "");
+              }}
+            />
             <Select
-              required
-              value={birthMonth}
-              onChange={(e) => setBirthMonth(e.target.value)}
-              disabled={!birthYear}
-            >
-              <option value="">출생 월</option>
-              {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map((m) => (
-                <option key={m} value={m}>{m}</option>
-              ))}
-            </Select>
-
+              placeholder="출생 월"
+              options={monthOptions}
+              value={birthMonth ? { value: birthMonth, label: birthMonth } : null}
+              onChange={(opt) => {
+                setBirthMonth(opt?.value || "");
+              }}
+              isDisabled={!birthYear}
+            />
             <Select
-              required
-              value={birthDay}
-              onChange={(e) => setBirthDay(e.target.value)}
-              disabled={!birthMonth}
-            >
-              <option value="">출생 일</option>
-              {Array.from({ length: dayCount }, (_, i) => String(i + 1).padStart(2, "0")).map((d) => (
-                <option key={d} value={d}>{d}</option>
-              ))}
-            </Select>
+              placeholder="출생 일"
+              options={dayOptions}
+              value={birthDay ? { value: birthDay, label: birthDay } : null}
+              onChange={(opt) => setBirthDay(opt?.value || "")}
+              isDisabled={!birthMonth}
+            />
           </Row>
         </Field>
 

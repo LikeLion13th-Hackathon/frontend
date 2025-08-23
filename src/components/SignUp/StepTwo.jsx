@@ -9,12 +9,19 @@ import {
   LimitBadge,
   LabelRow,
   Row,
-  Select,
   Field,
   Form,
 } from "../../styles/SignUp.styles";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import InfoBox from "./InfoBox";
+import SEOUL from "../../assets/addr/seoul.json";
+import INCHEON from "../../assets/addr/incheon.json";
+import Select from "../Select";
+
+const ADDR = {
+  ...SEOUL,
+  ...INCHEON,
+};
 
 const JOBS = ["학생", "직장인", "프리랜서", "주부", "기타"];
 
@@ -30,27 +37,7 @@ const PLACES = [
   "기타",
 ];
 
-const ADDR = {
-  서울특별시: {
-    강남구: ["역삼동", "삼성동", "논현동"],
-    종로구: ["청운동", "사직동", "부암동"],
-    마포구: ["합정동", "서교동", "망원동"],
-  },
-  부산광역시: {
-    해운대구: ["우동", "중동", "좌동"],
-    수영구: ["광안동", "민락동", "남천동"],
-    중구: ["영주동", "대청동", "보수동"],
-  },
-  대구광역시: {
-    중구: ["동인동", "삼덕동", "남산동"],
-    수성구: ["범어동", "만촌동", "두산동"],
-  },
-  경기도: {
-    수원시: ["인계동", "영통동", "매탄동"],
-    성남시: ["분당동", "정자동", "야탑동"],
-    고양시: ["일산동", "주교동", "덕이동"],
-  },
-};
+const toOptions = (arr) => arr.map((v) => ({ value: v, label: v }));
 
 export default function StepTwo({
   job,
@@ -74,6 +61,25 @@ export default function StepTwo({
   const dongList = useMemo(
     () => (sido && sigungu ? ADDR[sido][sigungu] : []),
     [sido, sigungu]
+  );
+
+  // options
+  const sidoOptions = useMemo(() => toOptions(sidoList), [sidoList]);
+  const sigunguOptions = useMemo(() => toOptions(sigunguList), [sigunguList]);
+  const dongOptions = useMemo(() => toOptions(dongList), [dongList]);
+
+  // 선택된 option
+  const selectedSido = useMemo(
+    () => sidoOptions.find((o) => o.value === sido) ?? null,
+    [sido, sidoOptions]
+  );
+  const selectedSigungu = useMemo(
+    () => sigunguOptions.find((o) => o.value === sigungu) ?? null,
+    [sigungu, sigunguOptions]
+  );
+  const selectedDong = useMemo(
+    () => dongOptions.find((o) => o.value === dong) ?? null,
+    [dong, dongOptions]
   );
 
   return (
@@ -105,52 +111,34 @@ export default function StepTwo({
           </Label>
           <Row>
             <Select
-              required
-              value={sido}
-              onChange={(e) => {
-                setSido(e.target.value);
+              placeholder="시/도"
+              options={sidoOptions}
+              value={selectedSido}
+              onChange={(opt) => {
+                const v = opt?.value || "";
+                setSido(v);
                 setSigungu("");
                 setDong("");
               }}
-            >
-              <option value="">시/도</option>
-              {sidoList.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </Select>
-
+            />
             <Select
-              required
-              value={sigungu}
-              onChange={(e) => {
-                setSigungu(e.target.value);
+              placeholder="시/군/구"
+              options={sigunguOptions}
+              value={selectedSigungu}
+              onChange={(opt) => {
+                const v = opt?.value || "";
+                setSigungu(v);
                 setDong("");
               }}
-              disabled={!sido}
-            >
-              <option value="">시/군/구</option>
-              {sigunguList.map((g) => (
-                <option key={g} value={g}>
-                  {g}
-                </option>
-              ))}
-            </Select>
-
+              isDisabled={!sido}
+            />
             <Select
-              required
-              value={dong}
-              onChange={(e) => setDong(e.target.value)}
-              disabled={!sigungu}
-            >
-              <option value="">읍/면/동</option>
-              {dongList.map((d) => (
-                <option key={d} value={d}>
-                  {d}
-                </option>
-              ))}
-            </Select>
+              placeholder="읍/면/동"
+              options={dongOptions}
+              value={selectedDong}
+              onChange={(opt) => setDong(opt?.value || "")}
+              isDisabled={!sigungu}
+            />
           </Row>
         </Field>
 
