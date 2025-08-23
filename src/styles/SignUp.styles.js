@@ -184,3 +184,11 @@ export const LimitBadge = styled.span`
   margin-top: 4px;
   border-radius: 500px;
 `;
+
+export const ErrorMessage = styled.span`
+  font-size: 12px;
+  color: red;
+  margin-top: 2px;
+  display: block;
+  text-align: right;
+`;
