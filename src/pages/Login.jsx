@@ -15,11 +15,46 @@ import MainLogo from "../assets/characters/Logo.png";
 import { login } from "../api/auth";
 
 function Login() {
-  // 로그인 입력 여부 관리
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  // 심사용 테스트계정
+  const handleTestLogin = async () => {
+    // 로그인 API
+    try {
+      const res = await login({
+        email: "test3@example.com",
+        password: "123123123123123",
+      });
+      const {
+        userId,
+        nickname,
+        email: userEmail,
+        accessToken,
+        tokenType,
+      } = res;
+
+      // 사용자 정보 저장
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ userId, nickname, userEmail })
+      );
+      localStorage.setItem("token", accessToken);
+      localStorage.setItem("tokenType", tokenType);
+
+      // 성공 후 메인페이지로 이동
+      navigate("/mainpage");
+      toast.success("테스트 로그인 성공!", { autoClose: 2000 });
+
+      // 실패
+    } catch (err) {
+      console.error("테스트 로그인 실패:", err);
+      toast.error("테스트 로그인 실패 😢");
+    }
+  };
+
+  // 일반 로그인
   const handleSubmit = async (e) => {
     e?.preventDefault?.();
 
@@ -75,11 +110,17 @@ function Login() {
         onChange={(e) => setPassword(e.target.value)}
         placeholder="비밀번호를 입력해주세요."
       />
+
       <Button onClick={handleSubmit} disabled={!email || !password}>
         로그인
       </Button>
 
-      <SignUpLink to="/signup">회원 가입하기</SignUpLink>
+      <div style={{ display: "flex", gap: "4vw" }}>
+        <SignUpLink to="/signup">회원 가입하기</SignUpLink>
+        <SignUpLink to="#" onClick={handleTestLogin}>
+          테스트 로그인(심사용)
+        </SignUpLink>
+      </div>
     </Container>
   );
 }

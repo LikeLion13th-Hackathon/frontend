@@ -35,6 +35,9 @@ export const ButtonWrapper = styled.div`
 
 export const SliderWrapper = styled.div`
   width: 100%;
+  height: 100%;
+  max-height: 80vh;
+  display: flex;
   overflow: hidden;
 `;
 
