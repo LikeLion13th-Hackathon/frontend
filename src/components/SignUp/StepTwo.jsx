@@ -12,7 +12,7 @@ import {
   Field,
   Form,
 } from "../../styles/SignUp.styles";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo } from "react";
 import InfoBox from "./InfoBox";
 import SEOUL from "../../assets/addr/seoul.json";
 import INCHEON from "../../assets/addr/incheon.json";
