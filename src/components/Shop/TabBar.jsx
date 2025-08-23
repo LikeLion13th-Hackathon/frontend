@@ -1,16 +1,16 @@
-import { TabsBar, Track, Tab, Underline, Title } from "../../styles/Shop.styles";
+import { TabsBar, Track, Tab, Underline, Title } from "../../styles/Shop/Shop.styles";
 
-export default function ShopTabs({ active = "grow", onChange }) {
+export default function TabBar({ active = "GROW", onChange }) {
   const tabs = [
-    { key: "grow", label: "캐릭터 키우기" },
-    { key: "decorate", label: "꾸미기 상점" },
+    { key: "GROW", label: "캐릭터 키우기" },
+    { key: "DECO", label: "꾸미기 상점" },
   ];
+
   const activeIndex = tabs.findIndex((tab) => tab.key === active);
   return (
     <TabsBar>
-      <Title style={{ textAlign: "center", background: "#FFFFFF", zIndex: "1000" }}>상점</Title>
+      <Title>상점</Title>
       <Track>
-      
         {tabs.map(tab => (
           <Tab
             key={tab.key}

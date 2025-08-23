@@ -10,7 +10,7 @@ import {
   XPSub,
   LevelBlock,
   XPSection,
-} from "../../styles/Shop.styles";
+} from "../../styles/Shop/GrowTab.styles";
 import defaultProfile from "../../assets/default-profile.png";
 
 export default function LevelInfo({ profileImage, levelText, nameText, percent }) {

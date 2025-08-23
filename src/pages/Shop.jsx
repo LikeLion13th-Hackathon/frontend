@@ -1,50 +1,83 @@
 // 상점 페이지
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 import Footer from "../components/Footer";
-import ShopTabs from "../components/Shop/ShopTabs";
+import TabBar from "../components/Shop/TabBar";
 import CoinBadge from "../components/Shop/CoinBadge";
-import { Page, AppBar, Title, Body, Placeholder } from "../styles/Shop.styles";
+import { Page } from "../styles/Shop/Shop.styles";
 import BbiBasic from "../assets/characters/bbi_basic.png";
 import spiderman from "../assets/임시.jpg";
 import GrowTab from "../components/Shop/GrowTab";
+import DecoTab from "../components/Shop/DecoTab";
 
+import useBgShop from "../hooks/useBgShop";
+import useSkinShop from "../hooks/useSkinShop";
+import useCoins from "../hooks/useCoins";
+
+import CharacterSection from "../components/Shop/CharacterSection";
+
+// 더미
+const dummy = {
+  name: "삐약이",
+  title: "호기심 많은 삐약이",
+  level: 3,
+  characterImg: BbiBasic,
+  profileImage: spiderman,
+  feedProgress: 2,
+  feedsRequiredToNext: 4,
+};
 
 export default function ShopPage() {
-  const [tab, setTab] = useState("grow");
-  const [coins, setCoins] = useState(1083);
+  const [tab, setTab] = useState("GROW");
+  const { coins, setCoins, reload: reloadCoins } = useCoins();
+  const [name, setName] = useState(dummy.name);
+  const [level, setLevel] = useState(dummy.level);
 
-  // 더미
-  const dummy = {
-    name: "삐약이",
-    nickname: "호기심 많은 삐약이",
-    level: 3,
-    characterImg: BbiBasic,
-    profileImage: spiderman,
-    feedProgress: 2,
-    feedsRequiredToNext: 4,
-  };
+  const bg = useBgShop();
+  const skin = useSkinShop();
 
+  const activeBg = useMemo(() => bg.items.find(v => v.active), [bg.items]);
+  const activeSkin = useMemo(() => skin.items.find(v => v.active), [skin.items]);
+
+  const pageStyle = activeBg?.img
+    ? {
+        backgroundImage: `url(${activeBg.img})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }
+    : undefined;
 
   return (
-    <Page>
-
-      <ShopTabs active={tab} onChange={setTab} />
+    <Page style={pageStyle}>
+      <TabBar active={tab} onChange={setTab} />
       <CoinBadge coin={coins} />
-      <section
-        id="tabpanel-grow"
-        role="tabpanel"
-        hidden={tab !== "grow"}
-      >
-        <GrowTab data={dummy} coins={coins} setCoins={setCoins} />
-      </section>
 
-      <section
-        id="tabpanel-decorate"
-        role="tabpanel"
-        hidden={tab !== "decorate"}
-      >
-        { }
-      </section>
+      <CharacterSection
+        name={name}
+        level={level}
+        imgSrc={activeSkin?.img || BbiBasic}
+        editable={tab === "GROW"}
+        variant={tab === "GROW" ? "grow" : "deco"}
+        onEditName={() => {
+          const next = prompt("캐릭터 이름을 입력하세요", name);
+          if (typeof next === "string" && next.trim()) setName(next.trim());
+        }}
+      />
+
+      {tab === "GROW" ? (
+        <GrowTab
+          data={{
+            ...dummy,
+            name,
+            level,
+            characterImg: activeSkin?.img || dummy.characterImg,
+          }}
+          coins={coins}
+          setCoins={setCoins}
+        />
+      ) : (
+        <DecoTab coins={coins} setCoins={setCoins} bg={bg} skin={skin} />
+      )}
       <Footer />
     </Page>
   );
