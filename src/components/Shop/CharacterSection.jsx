@@ -3,27 +3,33 @@ import {
   CharacterStageInner,
   CharacterImg,
   CharName,
-  CharLevel,
+  LevelBadge,
   CharNameRow,
   EditBtn
-} from "../../styles/Shop.styles";
+} from "../../styles/Shop/Shop.styles";
 import { PiPencilSimpleFill } from "react-icons/pi";
-import BbiBasic from "../../assets/characters/bbi_basic.png";
 
-export default function CharacterSection({ name = "삐약이", level = 3 }) {
+export default function CharacterSection({
+  name,
+  level,
+  imgSrc,
+  editable = false,
+  onEditName,
+  variant = "grow",
+}) {
   return (
-    <CharacterStage>
-      <CharacterStageInner>
-        <CharacterImg src={BbiBasic} alt="캐릭터" />
-
+    <CharacterStage $variant={variant}>
+      <CharacterStageInner $variant={variant}>
+        <CharacterImg src={imgSrc} alt="" />
         <CharNameRow>
           <CharName>{name}</CharName>
-          <EditBtn onClick ={() => console.log("닉네임 편집")}>
-            <PiPencilSimpleFill size={20} />
-          </EditBtn>
+          {editable && (
+            <EditBtn type="button" onClick={onEditName}>
+              <PiPencilSimpleFill size={20} />
+            </EditBtn>
+          )}
         </CharNameRow>
-
-        <CharLevel>Level {level}</CharLevel>
+        <LevelBadge>Level {level}</LevelBadge>
       </CharacterStageInner>
     </CharacterStage>
   );

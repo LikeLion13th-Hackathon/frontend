@@ -7,7 +7,7 @@ import {
   ActionBadge,
   CoinIconSmall,
   BadgeText
-} from "../../styles/Shop.styles";
+} from "../../styles/Shop/GrowTab.styles";
 
 export default function ActionSection({
   onMissionClick,

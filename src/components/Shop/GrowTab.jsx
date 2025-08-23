@@ -1,6 +1,6 @@
-import CharacterSection from "./CharacterSection";
 import LevelInfo from "./LevelInfo";
-import { GrowPanel, GrowBox, Divider } from "../../styles/Shop.styles";
+import { Panel, Divider } from "../../styles/Shop/Shop.styles";
+import { GrowBox } from "../../styles/Shop/GrowTab.styles";
 import ActionSection from "./ActionSection";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -42,9 +42,7 @@ export default function GrowTab({ data, coins, setCoins  }) {
 
 
   return (
-    <GrowPanel>
-      <CharacterSection name={data.name} level={level} imgSrc={data.characterImg} />
-
+    <Panel>
       <GrowBox>
         <LevelInfo
           profileImage={data.profileImage}
@@ -63,6 +61,6 @@ export default function GrowTab({ data, coins, setCoins  }) {
           cost={FEED_COST}
         />
       </GrowBox>
-    </GrowPanel>
+    </Panel>
   );
 }
