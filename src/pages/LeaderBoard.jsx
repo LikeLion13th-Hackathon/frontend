@@ -54,7 +54,7 @@ function LeaderBoard() {
   );
   const [loading, setLoading] = useState(false);
 
-  const [showMyModal, setShowMyModal] = useState(false);
+  const [modalOPen, setModalOpen] = useState(false);
   const [myAround, setMyAround] = useState([]); // 내 주변 랭킹
   const [myRank, setMyRank] = useState(null);
 
@@ -81,7 +81,7 @@ function LeaderBoard() {
             isMe: u.userId === myUserId,
           }))
         );
-        setShowMyModal(true);
+        setModalOpen(true);
       } else {
         alert("내 순위를 불러오지 못했어요.");
       }
@@ -145,11 +145,11 @@ function LeaderBoard() {
       )}
       <Footer />
 
-      {showMyModal && (
-        <Overlay onClick={() => setShowMyModal(false)}>
+      {modalOPen && (
+        <Overlay onClick={() => setModalOpen(false)}>
           <ModalBox onClick={(e) => e.stopPropagation()}>
             <ModalHeader>
-              <CloseBtn onClick={() => setShowMyModal(false)}>✕</CloseBtn>
+              <CloseBtn onClick={() => setModalOpen(false)}>✕</CloseBtn>
             </ModalHeader>
 
             {myAround.length === 0 ? (

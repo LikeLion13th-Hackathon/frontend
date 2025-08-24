@@ -17,3 +17,15 @@ export const getCoins = async () => {
   const { data } = await instance.get("/shop/coins");
   return data;
 };
+
+// 캐릭터 닉네임 변경
+export const updateCharacterName = async (newName) => {
+  const { data } = await instance.patch(`/shop/character/name?newName=${encodeURIComponent(newName)}`);
+  return data;
+};
+
+// 진화
+export const evolve = async () => {
+  const { data } = await instance.post("/shop/evolve");
+  return data;
+};
