@@ -23,14 +23,14 @@ export const Welcome = styled.h2`
   margin: 1vh;
 `;
 
-export default function MainPageHeader() {
+export default function MainPageHeader({ coins, userName }) {
   const navigate = useNavigate();
   return (
     <>
       <Header>
         <Row>
           <img src={Coin} width={22} style={{ marginTop: "2px" }} />
-          <span style={{ fontWeight: 700, fontSize: 16 }}>1000</span>
+          <span style={{ fontWeight: 700, fontSize: 16 }}>{coins}</span>
         </Row>
         {/* 나중에 통계 페이지 만들거면 <TbBrandGoogleAnalytics /> */}
         <img
@@ -40,7 +40,7 @@ export default function MainPageHeader() {
           onClick={() => navigate("/mypage")}
         />
       </Header>
-      <Welcome>TEST님, 반가워요!</Welcome>
+      <Welcome>{userName}님, 반가워요!</Welcome>
     </>
   );
 }
