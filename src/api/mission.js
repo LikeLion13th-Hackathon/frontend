@@ -12,6 +12,14 @@ export const fetchCustomMissionDetail = async (id) => {
   return data;
 };
 
+// 소비 패턴 기반 맞춤 미션 추천 (ai)
+export const fetchAIMissions = async () => {
+  const { data } = await instance.get(
+    "/api/missions?category=AI_CUSTOM&status=READY"
+  );
+  return data;
+};
+
 // 지역 맛집 미션 목록 조회
 export const fetchRestaurantMissions = async () => {
   const { data } = await instance.get("/api/missions/region/restaurants");

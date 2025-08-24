@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { MISSION_CATEGORY } from "../../constants/missionCategory.js";
 import Coin from "../../assets/icons/coin.png";
 import { Badge } from "../../styles/MissionDetail.styles.js";
+import { abandonMission as apiAbandonMission } from "../../api/mission.js";
 
 export const Card = styled.div`
   position: relative;
@@ -70,6 +71,7 @@ const StatusBadge = styled(Badge)`
 `;
 
 export default function MissionCard({
+  id,
   category,
   image,
   badgeLabel,
@@ -93,9 +95,6 @@ export default function MissionCard({
       )}
       {status === "completed" && (
         <StatusBadge style={{ backgroundColor: "#4CAF50" }}>완료됨</StatusBadge>
-      )}
-      {status === "abandoned" && (
-        <StatusBadge style={{ backgroundColor: "#999" }}>포기됨</StatusBadge>
       )}
 
       <Media $src={bgSrc}>

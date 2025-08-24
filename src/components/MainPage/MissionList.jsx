@@ -6,6 +6,7 @@ export default function MissionList({ items = [], onClick }) {
       {items.map((m) => (
         <MissionCard
           key={m.id}
+          id={m.id}
           category={m.category}
           image={m.image}
           title={m.title}

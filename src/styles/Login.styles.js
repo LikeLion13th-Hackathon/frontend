@@ -15,7 +15,7 @@ export const TitleSmall = styled.p`
   font-weight: 500;
   color: #767676;
   margin-top: 1vh;
-  margin-bottom: 5vh;
+  margin-bottom: 4vh;
 `;
 
 export const Input = styled.input`
@@ -44,7 +44,7 @@ const float = keyframes`
   100% { transform: translateY(0); }
 `;
 export const BbiImg = styled.img`
-  width: 21vh;
+  width: 18vh;
   margin-bottom: 4vh;
   animation: ${float} 3s ease-in-out infinite;
 `;
