@@ -14,7 +14,6 @@ import {
   fetchSpecialtyMissions,
   fetchAIMissions,
 } from "../api/mission";
-
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -156,6 +155,7 @@ export default function Mission() {
           <CategoryButton
             key={c}
             $active={activeTab === c}
+            $category={c}
             onClick={() => setActiveTab(c)}
           >
             {c}

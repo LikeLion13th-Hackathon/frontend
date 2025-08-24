@@ -47,6 +47,7 @@ function MyPage() {
     localStorage.removeItem("token");
     localStorage.removeItem("tokenType");
     localStorage.removeItem("user");
+    localStorage.removeItem("tutorialSeen");
     toast.success("정상적으로 로그아웃되었습니다.", { autoClose: 2000 });
     navigate("/login");
   };
@@ -103,6 +104,9 @@ function MyPage() {
           </SettingItem>
           <SettingItem onClick={() => navigate("/missions/completed")}>
             완료한 미션 <FiChevronRight />
+          </SettingItem>
+          <SettingItem onClick={() => navigate("/stats")}>
+            내 소비/미션 통계 <FiChevronRight />
           </SettingItem>
 
           <Divider />

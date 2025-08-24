@@ -1,77 +1,110 @@
 // 메인페이지
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Page } from "../styles/MainPage.styles";
+import TutorialModal from "../components/MainPage/TutorialModal";
 import MainPageHeader from "../components/MainPage/MainPageHeader";
 import CharacterCard from "../components/MainPage/CharacterCard";
 import BbiBasic from "../assets/characters/bbi_basic.png";
 import BgEx from "../assets/backgrounds/BackgroundEx.png";
 import MissionList from "../components/MainPage/MissionList";
-import Restaurant from "../assets/backgrounds/Restaurant.png";
-import Park from "../assets/backgrounds/Park.png";
 import Footer from "../components/Footer";
+import { fetchMainPageData } from "../api/mainPage";
+import { fetchMyProfile } from "../api/mypage";
+import { MISSION_CATEGORY } from "../constants/missionCategory";
+
+// 캐릭터 카드 배경 매핑
+const BACKGROUND_MAP = {
+  "기본 배경": BgEx,
+  // 필요시 다른 배경 추가
+};
 
 function MainPage() {
   const navigate = useNavigate();
 
-  // 토큰 없으면 로그인 페이지로 리다이렉션
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   if (!token || token === "null" || token.trim() === "") {
-  //     navigate("/login");
-  //     toast.warn("로그인이 필요합니다.", { autoClose: 2000 });
-  //   }
-  // }, [navigate]);
+  const [missions, setMissions] = useState([]);
+  const [homeCard, setHomeCard] = useState(null);
+  const [userName, setUserName] = useState("");
 
-  // 미션 더미데이터 (나중에 API로 교체)
-  const [missions, setMissions] = useState([
-    {
-      id: "1",
-      category: "맞춤미션",
-      image: Restaurant,
-      title: "00동 음식점에서 7000원 이상 결제하기",
-      points: 100,
-    },
-    {
-      id: "2",
-      category: "지역명소",
-      image: Park,
-      title: "ㅁㅁ구 박물관 방문하기",
-      points: 300,
-    },
-    {
-      id: "3",
-      category: "기타",
-      image: Park,
-      title: "기타 기타 기타",
-      points: 500,
-    },
-  ]);
+  // 튜토리얼 모달창 관련
+  const [tutorialOpen, setTutorialOpen] = useState(false);
+  useEffect(() => {
+    const seen = localStorage.getItem("tutorialSeen");
+    if (!seen) {
+      setTutorialOpen(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [homeData, profileData] = await Promise.all([
+          fetchMainPageData(),
+          fetchMyProfile(),
+        ]);
+
+        setHomeCard(homeData.homeCard);
+        setMissions(homeData.missions);
+        setUserName(profileData?.nickname || "게스트");
+      } catch (error) {
+        console.error("메인페이지 데이터 로딩 실패:", error);
+      }
+    };
+    loadData();
+  }, []);
 
   return (
     <>
       <Container>
-        <MainPageHeader />
+        <MainPageHeader
+          coins={homeCard?.coins}
+          userName={userName}
+          onHelpClick={() => setTutorialOpen(true)}
+        />
         <Page>
-          <CharacterCard
-            bg={`url(${BgEx})`}
-            levelText="Level 3"
-            name="삐약이"
-            progress={87.2}
-            characterSrc={BbiBasic}
-            onClick={() => navigate("/shop")}
-          />
+          {homeCard && (
+            <CharacterCard
+              bg={`url(${BACKGROUND_MAP[homeCard.backgroundName] || BgEx})`}
+              levelText={`Level ${homeCard.character.level}`}
+              name={homeCard.characterName}
+              progress={
+                (homeCard.character.feedProgress /
+                  homeCard.character.feedsRequiredToNext) *
+                100
+              }
+              onClick={() => navigate("/shop")}
+            />
+          )}
         </Page>
 
         <h2 style={{ fontSize: "18px", margin: "18px 6px 10px" }}>
-          오늘의 미션
+          AI가 추천해주는 오늘의 미션
         </h2>
         <MissionList
-          items={missions}
+          items={missions.map((m) => {
+            const categoryInfo =
+              MISSION_CATEGORY[m.category] || MISSION_CATEGORY.ETC;
+            return {
+              id: m.missionId,
+              category: categoryInfo.label,
+              image: categoryInfo.image,
+              title: m.title,
+              points: m.rewardPoint,
+              badgeTextColor: categoryInfo.badgeTextColor,
+              status: m.status,
+            };
+          })}
           onClick={(id) => navigate(`/mission/${id}`)}
         />
       </Container>
       <Footer />
+      <TutorialModal
+        open={tutorialOpen}
+        onClose={() => {
+          setTutorialOpen(false);
+          localStorage.setItem("tutorialSeen", "true");
+        }}
+      />
     </>
   );
 }

@@ -6,7 +6,9 @@ const input = process.argv[2]; // 엑셀 파일 경로
 const output = process.argv[3] || "seoul_incheon.json"; // 출력 파일 경로
 
 if (!input) {
-  console.error("Usage: node tools/beopjeong-xlsx-to-json.js <input.xlsx> [output.json]");
+  console.error(
+    "Usage: node tools/beopjeong-xlsx-to-json.js <input.xlsx> [output.json]"
+  );
   process.exit(1);
 }
 
