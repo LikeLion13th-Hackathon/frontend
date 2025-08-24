@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import SignupComplete from "./pages/SignUpComplete";
 import MainPage from "./pages/MainPage";
+import StatsPage from "./components/MainPage/Stats";
 import Mission from "./pages/Mission";
 import MissionDetail from "./pages/MissionDetail";
 import ReceiptUpload from "./components/MissionDetail/ReceiptUpload";
@@ -35,6 +36,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signup-complete" element={<SignupComplete />} />
           <Route path="/mainpage" element={<MainPage />} />
+          <Route path="/stats" element={<StatsPage />} />
           <Route path="/mission" element={<Mission />} />
           <Route path="/mission/:id" element={<MissionDetail />} />
           <Route path="/receipt/upload/:missionId" element={<ReceiptUpload />} />

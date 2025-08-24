@@ -88,7 +88,6 @@ export default function CharacterCard({
       tabIndex={0}
       onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onClick?.()}
     >
-      {" "}
       <BgImg $bg={bg} />
       <Content>
         <div>

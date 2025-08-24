@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Header, BackIcon } from "../../styles/MyPage.styles";
 import MissionList from "../../components/MainPage/MissionList";
 import { InfoText } from "../MissionDetail/ReceiptUpload";
-import { fetchMyProfile } from "../../api/mypage";
+import { fetchOngoingMissions } from "../../api/mypage";
 
 function OngoingMissions() {
   const navigate = useNavigate();
@@ -12,13 +12,13 @@ function OngoingMissions() {
   useEffect(() => {
     const loadMissions = async () => {
       try {
-        const data = await fetchMyProfile();
-        const mapped = (data.ongoingMissions || []).map((title, idx) => ({
-          id: idx + 1, // 실제 id가 없으니 index로 대체
-          category: "진행 중", // 카테고리 정보가 없어서 임시값
-          title,
-          points: 0, // API에서 포인트 안 주면 0으로
-          status: "inprogress",
+        const data = await fetchOngoingMissions();
+        const mapped = (data || []).map((m) => ({
+          id: m.missionId,
+          category: m.category,
+          title: m.title,
+          points: m.rewardPoint,
+          status: m.status?.toLowerCase() || "inprogress",
         }));
         setMissions(mapped);
       } catch (err) {
