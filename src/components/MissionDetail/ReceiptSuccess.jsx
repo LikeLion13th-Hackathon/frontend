@@ -58,7 +58,9 @@ function ReceiptSuccess() {
           borderRadius: "999px",
           boxShadow: "0 4px 11px rgba(0, 0, 0, 0.25)",
         }}
-        onClick={() => navigate("/mission")}
+        onClick={() =>
+          navigate("/mission", { state: { updatedMissionId: missionId } })
+        }
       >
         다른 미션 둘러보기
       </Button>

@@ -1,6 +1,6 @@
 // 미션 목록 페이지
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { CategoryTabs, CategoryButton } from "../styles/Mission.styles";
 import LocationBar from "../components/Mission/LocationBar";
 import MissionList from "../components/MainPage/MissionList";
@@ -14,8 +14,6 @@ import {
   fetchSpecialtyMissions,
   fetchAIMissions,
 } from "../api/mission";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 // 상태 정규화
 const normalizeStatus = (status) => {
@@ -36,13 +34,21 @@ const normalizeStatus = (status) => {
 const countCompletedMissions = (missions) =>
   missions.filter((m) => m.status === "completed").length;
 
+// 배열 섞기 유틸
+const shuffleArray = (arr) => {
+  return [...arr].sort(() => Math.random() - 0.5);
+};
+
 export default function Mission() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [missions, setMissions] = useState([]);
   const [activeTab, setActiveTab] = useState("전체");
-  const [location, setLocation] = useState("위치 확인 중…");
+  const [locationText, setLocationText] = useState("위치 확인 중…");
+  const [completedCount, setCompletedCount] = useState(0);
+  const [aiAdded, setAiAdded] = useState(false);
 
-  // 이미 추가된 AI 미션 추적 (중복 방지)
+  // 이미 추가된 AI 미션 추적
   const addedAIMissionsRef = useRef(0);
 
   // API에서 불러온 카테고리 매핑
@@ -94,59 +100,84 @@ export default function Mission() {
           const geocoder = new window.kakao.maps.services.Geocoder();
           geocoder.coord2Address(longitude, latitude, (result, status) => {
             if (status === window.kakao.maps.services.Status.OK) {
-              setLocation(result[0].address.address_name);
+              setLocationText(result[0].address.address_name);
             }
           });
         },
         (err) => {
           console.error("위치 권한 에러:", err);
-          setLocation("위치 정보를 가져올 수 없습니다");
+          setLocationText("위치 정보를 가져올 수 없습니다");
         }
       );
     }
   }, []);
 
-  // 완료된 미션 3개마다 AI 미션 자동 활성화 + 알림
+  // 미션 변경될 때마다 완료 개수 갱신
   useEffect(() => {
-    const completedCount = countCompletedMissions(missions);
+    setCompletedCount(countCompletedMissions(missions));
+  }, [missions]);
 
+  // 완료된 미션 3개마다 AI 미션 자동 활성화 + 배너 고정
+  useEffect(() => {
     if (
       completedCount >= 3 &&
       completedCount % 3 === 0 &&
-      completedCount / 3 > addedAIMissionsRef.current
+      completedCount > addedAIMissionsRef.current
     ) {
       fetchAIMissions()
         .then((aiMissions) => {
-          const newAIMissions = (aiMissions || []).map(mapMission);
-          setMissions((prev) => [...prev, ...newAIMissions]);
-          addedAIMissionsRef.current += 1;
+          const newAIMissions = (aiMissions || [])
+            .map(mapMission)
+            .filter((ai) => !missions.some((m) => m.id === ai.id));
 
-          toast.success(
-            `완료된 3개의 미션을 기반으로 AI 추천 미션 ${newAIMissions.length}개가 추가되었어요!`,
-            { position: "top-center", autoClose: 3000 }
-          );
+          if (newAIMissions.length > 0) {
+            setMissions((prev) => [...prev, ...newAIMissions]);
+            addedAIMissionsRef.current = completedCount;
+
+            setAiAdded(true);
+          }
         })
         .catch((err) => console.error("AI 미션 불러오기 실패:", err));
     }
-  }, [missions]);
+  }, [completedCount]);
 
   // 카테고리 탭
   const categories = [
     "전체",
-    ...Object.values(MISSION_CATEGORY).map((c) => c.label),
+    ...Object.values(MISSION_CATEGORY)
+      .map((c) => c.label)
+      .filter((label) => label !== "AI 추천"),
   ];
+
+  // 완료 미션은 맨 밑으로 보내기
+  const sortByStatus = (arr) => {
+    return [...arr].sort((a, b) => {
+      if (a.status === "completed" && b.status !== "completed") return 1;
+      if (a.status !== "completed" && b.status === "completed") return -1;
+      return 0;
+    });
+  };
 
   // 탭별 필터링
   const filteredMissions =
     activeTab === "전체"
-      ? missions
-      : missions.filter((m) => m.category === activeTab);
+      ? sortByStatus([
+          ...missions.filter((m) => m.apiCategory === "CUSTOM"),
+          ...missions.filter((m) => m.apiCategory === "AI_CUSTOM"),
+          ...missions.filter(
+            (m) => !["CUSTOM", "AI_CUSTOM"].includes(m.apiCategory)
+          ),
+        ])
+      : activeTab === "맞춤미션"
+      ? sortByStatus(
+          shuffleArray(missions.filter((m) => m.apiCategory === "CUSTOM"))
+        )
+      : activeTab === "AI 추천"
+      ? sortByStatus(missions.filter((m) => m.apiCategory === "AI_CUSTOM"))
+      : sortByStatus(missions.filter((m) => m.category === activeTab));
 
   return (
     <>
-      {/* 토스트 컨테이너 */}
-      <ToastContainer />
-
       <h3 style={{ textAlign: "center" }}>미션</h3>
 
       {/* 카테고리 탭 */}
@@ -164,7 +195,25 @@ export default function Mission() {
       </CategoryTabs>
 
       {/* 위치 바 */}
-      <LocationBar location={location} />
+      <LocationBar location={locationText} />
+
+      {/* AI 미션 배너 */}
+      {aiAdded && (
+        <div
+          style={{
+            textAlign: "center",
+            background: "#f0f0ff",
+            color: "#6C63FF",
+            padding: "4px",
+            borderRadius: "8px",
+            margin: "2px auto",
+            width: "90%",
+            fontSize: "15px",
+          }}
+        >
+          이제부터 AI 추천 미션이 함께 제공돼요 🎉
+        </div>
+      )}
 
       {/* 미션 목록 */}
       <div style={{ padding: "2vh", paddingBottom: "12vh" }}>

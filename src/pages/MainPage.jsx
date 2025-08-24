@@ -25,13 +25,19 @@ function MainPage() {
   const [missions, setMissions] = useState([]);
   const [homeCard, setHomeCard] = useState(null);
   const [userName, setUserName] = useState("");
+  const [tutorialOpen, setTutorialOpen] = useState(false); // 튜토리얼 모달창 관련
 
-  // 튜토리얼 모달창 관련
-  const [tutorialOpen, setTutorialOpen] = useState(false);
   useEffect(() => {
-    const seen = localStorage.getItem("tutorialSeen");
-    if (!seen) {
+    const globalSeen = localStorage.getItem("tutorialSeen_global");
+    if (!globalSeen) {
       setTutorialOpen(true);
+      localStorage.setItem("tutorialSeen_global", "true");
+      return;
+    }
+    const loginSeen = localStorage.getItem("tutorialSeen_login");
+    if (loginSeen === "false") {
+      setTutorialOpen(true);
+      localStorage.setItem("tutorialSeen_login", "true");
     }
   }, []);
 
@@ -78,7 +84,7 @@ function MainPage() {
         </Page>
 
         <h2 style={{ fontSize: "18px", margin: "18px 6px 10px" }}>
-          AI가 추천해주는 오늘의 미션
+          오늘의 추천 미션
         </h2>
         <MissionList
           items={missions.map((m) => {
@@ -86,6 +92,7 @@ function MainPage() {
               MISSION_CATEGORY[m.category] || MISSION_CATEGORY.ETC;
             return {
               id: m.missionId,
+              apiCategory: m.category,
               category: categoryInfo.label,
               image: categoryInfo.image,
               title: m.title,
@@ -94,7 +101,12 @@ function MainPage() {
               status: m.status,
             };
           })}
-          onClick={(id) => navigate(`/mission/${id}`)}
+          onClick={(id) => {
+            const selected = missions.find((m) => m.missionId === id);
+            navigate(`/mission/${id}`, {
+              state: { category: selected.category },
+            });
+          }}
         />
       </Container>
       <Footer />
