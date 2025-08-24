@@ -1,5 +1,5 @@
 // 마이페이지 수정
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Header, BackIcon } from "../styles/MyPage.styles";
@@ -9,7 +9,6 @@ import {
   Field,
   Label,
   Input,
-  Select,
   Row,
   SubmitButton,
   RadioGroup,
@@ -17,6 +16,9 @@ import {
   CheckboxOption,
 } from "../styles/SignUp.styles";
 import { fetchMyProfile, updateMyProfile } from "../api/mypage";
+import Select from "../components/Select";
+import SEOUL from "../assets/addr/seoul.json";
+import INCHEON from "../assets/addr/incheon.json";
 
 // 백-프론트 매핑
 const PLACE_MAP = {
@@ -34,14 +36,9 @@ const REVERSE_PLACE_MAP = Object.fromEntries(
   Object.entries(PLACE_MAP).map(([code, label]) => [label, code])
 );
 
-const REGIONS = {
-  서울특별시: {
-    강남구: ["삼성동", "역삼동"],
-    서대문구: ["북가좌동", "남가좌동"],
-  },
-  인천광역시: {
-    부평구: ["부평동", "삼산동"],
-  },
+const ADDR = {
+  ...SEOUL,
+  ...INCHEON,
 };
 
 export default function MyPageEdit() {
@@ -59,8 +56,62 @@ export default function MyPageEdit() {
 
   // 현재 연도 & 선택한 연/월에 맞는 일 수 계산
   const thisYear = new Date().getFullYear();
-  const dayCount =
-    birthYear && birthMonth ? new Date(birthYear, birthMonth, 0).getDate() : 31;
+  const daysInMonth = (y, m) => new Date(Number(y), Number(m), 0).getDate(); // m: 1~12
+  const dayCount = birthYear && birthMonth ? daysInMonth(birthYear, birthMonth) : 31;
+
+  // 월/년 바뀔 때 기존 day가 초과면 보정
+  useEffect(() => {
+    if (!birthYear || !birthMonth || !birthDay) return;
+    const max = daysInMonth(birthYear, birthMonth);
+    if (Number(birthDay) > max) setBirthDay(String(max).padStart(2, "0"));
+  }, [birthYear, birthMonth, birthDay, setBirthDay]);
+
+  const yearOptions = useMemo(
+    () => Array.from({ length: 100 }, (_, i) => thisYear - i)
+               .map((y) => ({ value: String(y), label: String(y) })),
+    [thisYear]
+  );
+  const monthOptions = useMemo(
+    () => Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0"))
+               .map((m) => ({ value: m, label: m })),
+    []
+  );
+  const dayOptions = useMemo(
+    () => Array.from({ length: dayCount }, (_, i) => String(i + 1).padStart(2, "0"))
+               .map((d) => ({ value: d, label: d })),
+    [dayCount]
+  );
+
+  const toOptions = (arr) => arr.map((v) => ({ value: v, label: v }));
+
+  const sidoList = useMemo(() => Object.keys(ADDR), []);
+  const sigunguList = useMemo(
+    () => (sido ? Object.keys(ADDR[sido]) : []),
+    [sido]
+  );
+  const dongList = useMemo(
+    () => (sido && sigungu ? ADDR[sido][sigungu] : []),
+    [sido, sigungu]
+  );
+
+  // options
+  const sidoOptions = useMemo(() => toOptions(sidoList), [sidoList]);
+  const sigunguOptions = useMemo(() => toOptions(sigunguList), [sigunguList]);
+  const dongOptions = useMemo(() => toOptions(dongList), [dongList]);
+
+  // 선택된 option
+  const selectedSido = useMemo(
+    () => sidoOptions.find((o) => o.value === sido) ?? null,
+    [sido, sidoOptions]
+  );
+  const selectedSigungu = useMemo(
+    () => sigunguOptions.find((o) => o.value === sigungu) ?? null,
+    [sigungu, sigunguOptions]
+  );
+  const selectedDong = useMemo(
+    () => dongOptions.find((o) => o.value === dong) ?? null,
+    [dong, dongOptions]
+  );
 
   // 프로필 불러오기
   useEffect(() => {
@@ -109,9 +160,9 @@ export default function MyPageEdit() {
     const birthDate =
       birthYear && birthMonth && birthDay
         ? `${birthYear}-${birthMonth.padStart(2, "0")}-${birthDay.padStart(
-            2,
-            "0"
-          )}`
+          2,
+          "0"
+        )}`
         : "";
 
     const payload = {
@@ -164,44 +215,29 @@ export default function MyPageEdit() {
           <Label>생년월일</Label>
           <Row>
             <Select
-              value={birthYear}
-              onChange={(e) => setBirthYear(e.target.value)}
-            >
-              <option value="">출생연도</option>
-              {Array.from({ length: 100 }, (_, i) => thisYear - i).map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
-            </Select>
+              placeholder="출생연도"
+              options={yearOptions}
+              value={birthYear ? { value: birthYear, label: birthYear } : null}
+              onChange={(opt) => {
+                setBirthYear(opt?.value || "");
+              }}
+            />
             <Select
-              value={birthMonth}
-              onChange={(e) => setBirthMonth(e.target.value)}
-              disabled={!birthYear}
-            >
-              <option value="">출생 월</option>
-              {Array.from({ length: 12 }, (_, i) =>
-                String(i + 1).padStart(2, "0")
-              ).map((m) => (
-                <option key={m} value={m}>
-                  {m}
-                </option>
-              ))}
-            </Select>
+              placeholder="출생 월"
+              options={monthOptions}
+              value={birthMonth ? { value: birthMonth, label: birthMonth } : null}
+              onChange={(opt) => {
+                setBirthMonth(opt?.value || "");
+              }}
+              isDisabled={!birthYear}
+            />
             <Select
-              value={birthDay}
-              onChange={(e) => setBirthDay(e.target.value)}
-              disabled={!birthMonth}
-            >
-              <option value="">출생 일</option>
-              {Array.from({ length: dayCount }, (_, i) =>
-                String(i + 1).padStart(2, "0")
-              ).map((d) => (
-                <option key={d} value={d}>
-                  {d}
-                </option>
-              ))}
-            </Select>
+              placeholder="출생 일"
+              options={dayOptions}
+              value={birthDay ? { value: birthDay, label: birthDay } : null}
+              onChange={(opt) => setBirthDay(opt?.value || "")}
+              isDisabled={!birthMonth}
+            />
           </Row>
         </Field>
 
@@ -227,52 +263,34 @@ export default function MyPageEdit() {
           <Label>지역</Label>
           <Row>
             <Select
-              value={sido}
-              onChange={(e) => {
-                setSido(e.target.value);
+              placeholder="시/도"
+              options={sidoOptions}
+              value={selectedSido}
+              onChange={(opt) => {
+                const v = opt?.value || "";
+                setSido(v);
                 setSigungu("");
                 setDong("");
               }}
-            >
-              <option value="">시/도 선택</option>
-              {Object.keys(REGIONS).map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </Select>
-
+            />
             <Select
-              value={sigungu}
-              onChange={(e) => {
-                setSigungu(e.target.value);
+              placeholder="시/군/구"
+              options={sigunguOptions}
+              value={selectedSigungu}
+              onChange={(opt) => {
+                const v = opt?.value || "";
+                setSigungu(v);
                 setDong("");
               }}
-              disabled={!sido}
-            >
-              <option value="">구/군 선택</option>
-              {sido &&
-                Object.keys(REGIONS[sido]).map((g) => (
-                  <option key={g} value={g}>
-                    {g}
-                  </option>
-                ))}
-            </Select>
-
+              isDisabled={!sido}
+            />
             <Select
-              value={dong}
-              onChange={(e) => setDong(e.target.value)}
-              disabled={!sigungu}
-            >
-              <option value="">동 선택</option>
-              {sido &&
-                sigungu &&
-                REGIONS[sido][sigungu].map((d) => (
-                  <option key={d} value={d}>
-                    {d}
-                  </option>
-                ))}
-            </Select>
+              placeholder="읍/면/동"
+              options={dongOptions}
+              value={selectedDong}
+              onChange={(opt) => setDong(opt?.value || "")}
+              isDisabled={!sigungu}
+            />
           </Row>
         </Field>
 
