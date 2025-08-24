@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Header } from "../../styles/MyPage.styles";
 import { UploadBox } from "./ReceiptUpload";
+import { getReceiptFile } from "../../api/receipt";
 import {
   Section,
   FieldTitle,
@@ -10,13 +12,31 @@ import {
 function ReceiptConfirm() {
   const navigate = useNavigate();
   const location = useLocation();
-  const image = location.state?.image;
-  const ocrData = location.state?.ocrData || {
-    store: "○○식당",
-    address: "○○광역시 ○○동 ○○구 ○○빌딩 1층",
-    date: "2025.08.13 오전 11시 38분",
-    amount: "18,500원",
-  };
+  const result = location.state; // OCR 결과
+  const [imageUrl, setImageUrl] = useState(null);
+  const address =
+    result.storeAddressFull ||
+    [result.storeAddressSiDo, result.storeAddressGuGun, result.storeAddressDong]
+      .filter(Boolean)
+      .join(" ") ||
+    "주소 없음";
+
+  // 이미지 불러오기
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const blob = await getReceiptFile(result.missionId, result.receiptId);
+        const url = URL.createObjectURL(blob);
+        setImageUrl(url);
+
+        // 컴포넌트 언마운트 시 메모리 정리
+        return () => URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error("영수증 이미지 불러오기 실패:", err);
+      }
+    };
+    fetchImage();
+  }, [result.missionId, result.receiptId]);
 
   return (
     <div
@@ -34,14 +54,15 @@ function ReceiptConfirm() {
 
       {/* 업로드한 영수증 이미지 */}
       <UploadBox>
-        {image && (
+        {imageUrl && (
           <img
-            src={image}
+            src={imageUrl}
             style={{
               width: "100%",
               height: "100%",
               objectFit: "contain",
             }}
+            alt="영수증"
           />
         )}
       </UploadBox>
@@ -58,16 +79,20 @@ function ReceiptConfirm() {
         }}
       >
         <Section>
-          <FieldTitle>{ocrData.store}</FieldTitle>
-          <FieldText>{ocrData.address}</FieldText>
+          <FieldTitle>{result.storeName}</FieldTitle>
+          <FieldText>{address}</FieldText>
         </Section>
         <Section>
           <FieldTitle>방문 날짜</FieldTitle>
-          <FieldText>{ocrData.date}</FieldText>
+          <FieldText>
+            {result.purchaseAt
+              ? new Date(result.purchaseAt).toLocaleString()
+              : "날짜 없음"}
+          </FieldText>
         </Section>
         <Section>
           <FieldTitle>결제 금액</FieldTitle>
-          <FieldText>{ocrData.amount}</FieldText>
+          <FieldText>{result.amount?.toLocaleString()}원</FieldText>
         </Section>
       </div>
 
@@ -93,7 +118,7 @@ function ReceiptConfirm() {
             color: "#808080",
             cursor: "pointer",
           }}
-          onClick={() => navigate("/receipt/upload")}
+          onClick={() => navigate(`/receipt/upload/${result.missionId}`)}
         >
           재업로드
         </button>
@@ -109,7 +134,14 @@ function ReceiptConfirm() {
             color: "#fff",
             cursor: "pointer",
           }}
-          onClick={() => navigate("/receipt/success")}
+          onClick={() =>
+            navigate("/receipt/success", {
+              state: {
+                missionId: result.missionId,
+                receiptId: result.receiptId,
+              },
+            })
+          }
         >
           확인 완료
         </button>

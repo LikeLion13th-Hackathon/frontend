@@ -82,11 +82,11 @@ export const startMission = async (id) => {
 };
 
 // 미션 완료
-export const completeMission = async (id) => {
+export const completeMission = async (id, receiptId) => {
   const token = localStorage.getItem("token");
   const res = await axios.post(
     `${process.env.REACT_APP_API_URL}/api/missions/${id}/complete`,
-    {},
+    { receiptId },
     { headers: { Authorization: `Bearer ${token}` } }
   );
   return res.data;
