@@ -10,7 +10,7 @@ import {
   SignUpLink,
 } from "../styles/Login.styles";
 import { Button } from "../components/Button";
-import BbiBasic from "../assets/characters/bbi_basic.png";
+import BbiBasic from "../assets/characters/BbiLoc.png";
 import MainLogo from "../assets/characters/Logo.png";
 import { login } from "../api/auth";
 

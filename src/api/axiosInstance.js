@@ -3,7 +3,7 @@ import axios from "axios";
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   withCredentials: true,
-  timeout: 10000,
+  timeout: 20000,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -28,10 +28,14 @@ instance.interceptors.response.use(
   (err) => {
     const status = err.response?.status;
     const data = err.response?.data;
-    const url = err.config?.url;
-    const method = err.config?.method;
-    console.error("API 요청 에러 ▶", { method, url, status, data });
-    return Promise.reject(err);
+    console.error("API 요청 에러 ▶", {
+      method: err.config?.method,
+      url: err.config?.url,
+      status,
+      data,
+    });
+
+    return Promise.reject(data || err);
   }
 );
 
