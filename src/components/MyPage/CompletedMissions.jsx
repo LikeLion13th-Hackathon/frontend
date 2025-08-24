@@ -3,7 +3,23 @@ import { useNavigate } from "react-router-dom";
 import { Header, BackIcon } from "../../styles/MyPage.styles";
 import MissionList from "../../components/MainPage/MissionList";
 import { InfoText } from "../MissionDetail/ReceiptUpload";
+import { MISSION_CATEGORY } from "../../constants/missionCategory";
 import { fetchCompletedMissions } from "../../api/mypage";
+
+// 상태 정규화
+const normalizeStatus = (status) => {
+  switch (status) {
+    case "IN_PROGRESS":
+      return "inProgress";
+    case "COMPLETED":
+      return "completed";
+    case "ABANDONED":
+      return "abandoned";
+    case "READY":
+    default:
+      return "ready";
+  }
+};
 
 function CompletedMissions() {
   const navigate = useNavigate();
@@ -13,13 +29,20 @@ function CompletedMissions() {
     const load = async () => {
       try {
         const data = await fetchCompletedMissions();
-        const formatted = (data || []).map((m) => ({
-          id: m.missionId,
-          category: m.category,
-          title: m.title,
-          points: m.rewardPoint,
-          status: m.status?.toLowerCase() || "completed",
-        }));
+        const formatted = (data || []).map((m) => {
+          const categoryInfo =
+            MISSION_CATEGORY[m.category] || MISSION_CATEGORY.ETC;
+          return {
+            id: m.missionId,
+            apiCategory: m.category,
+            category: categoryInfo.label,
+            image: categoryInfo.image,
+            title: m.title,
+            points: m.rewardPoint,
+            status: normalizeStatus(m.status),
+            badgeTextColor: categoryInfo.badgeTextColor,
+          };
+        });
         setMissions(formatted);
       } catch (err) {
         console.error("완료한 미션 불러오기 실패:", err);

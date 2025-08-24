@@ -5,8 +5,8 @@ export default function MissionList({ items = [], onClick }) {
     <section>
       {items.map((m) => (
         <MissionCard
-          key={m.id || m.missionId}
-          id={m.id || m.missionId}
+          key={`${m.apiCategory || "MISSION"}-${m.id}-${Math.random()}`}
+          id={m.id}
           category={m.category}
           image={m.image}
           title={m.title}

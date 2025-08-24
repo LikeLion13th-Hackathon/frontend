@@ -42,6 +42,7 @@ function Login() {
       );
       localStorage.setItem("token", accessToken);
       localStorage.setItem("tokenType", tokenType);
+      localStorage.setItem("tutorialSeen_login", "false");
 
       // 성공 후 메인페이지로 이동
       navigate("/mainpage");
@@ -77,6 +78,7 @@ function Login() {
       );
       if (accessToken) localStorage.setItem("token", accessToken);
       if (tokenType) localStorage.setItem("tokenType", tokenType);
+      localStorage.setItem("tutorialSeen_login", "false");
 
       // 성공 후 메인페이지로 이동
       toast.success(message, { autoClose: 2000 });

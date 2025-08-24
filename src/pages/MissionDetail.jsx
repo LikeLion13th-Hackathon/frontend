@@ -68,6 +68,8 @@ function MissionDetail() {
         const fetchers = {
           CUSTOM: fetchCustomMissionDetail,
           맞춤미션: fetchCustomMissionDetail,
+          AI_CUSTOM: fetchCustomMissionDetail,
+          AI_맞춤미션: fetchCustomMissionDetail,
           RESTAURANT: fetchRestaurantMissionDetail,
           지역맛집: fetchRestaurantMissionDetail,
           LANDMARK: fetchLandmarkMissionDetail,
