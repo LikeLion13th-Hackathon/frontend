@@ -30,6 +30,7 @@ export default function useSkinShop() {
           return {
             id: c.skinId,
             name: c.name,
+            title: c.title,
             price: c.priceCoins,
             owned: inv?.owned ?? c.owned ?? false,
             active: inv?.active ?? c.active ?? false,
