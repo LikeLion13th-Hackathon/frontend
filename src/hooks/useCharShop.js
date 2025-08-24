@@ -5,9 +5,9 @@ import {
   purchaseSkin,
   activateSkin,
 } from "../api/character";
-import { getSkinSrc } from "../data/imageMap";
+import { getCharImg, getCharTitle } from "../data/imageMap";
 
-export default function useSkinShop() {
+export default function useCharShop() {
   const [items, setItems] = useState([]);   // [{id,name,price,owned,active,img}]
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,11 +30,11 @@ export default function useSkinShop() {
           return {
             id: c.skinId,
             name: c.name,
-            title: c.title,
+            title: getCharTitle(c.skinId, 1),
             price: c.priceCoins,
             owned: inv?.owned ?? c.owned ?? false,
             active: inv?.active ?? c.active ?? false,
-            img: getSkinSrc(c.skinId),
+            img: getCharImg(c.skinId, 1),
           };
         })
       );

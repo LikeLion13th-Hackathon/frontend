@@ -4,16 +4,15 @@ import { GrowBox } from "../../styles/Shop/GrowTab.styles";
 import ActionSection from "./ActionSection";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { feed } from "../../api/shop";
+import { feed, evolve } from "../../api/shop";
 
-export default function GrowTab({ data, coins, setCoins, onLevelChange }) {
+export default function GrowTab({ data, coins, setCoins, onLevelChange, onFeedProgressChange, onFeedsRequiredChange, reloadOverview }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const FEED_COST = 100;
 
-  const [feedProgress, setFeedProgress] = useState(data.feedProgress);
-  const [feedsRequiredToNext, setFeedsRequiredToNext] = useState(data.feedsRequiredToNext);
+  const { level, feedProgress, feedsRequiredToNext } = data;
 
   const percent = Math.min(100, +((feedProgress / Math.max(1, feedsRequiredToNext)) * 100).toFixed(1));
   const evolveReady = feedProgress >= feedsRequiredToNext || percent >= 100;
@@ -41,11 +40,11 @@ export default function GrowTab({ data, coins, setCoins, onLevelChange }) {
       }
 
       if (res.feedProgress != null) {
-        setFeedProgress(res.feedProgress);
+        onFeedProgressChange(res.feedProgress);
       }
       
       if (res.feedsRequiredToNext != null) {
-        setFeedsRequiredToNext(res.feedsRequiredToNext);
+        onFeedsRequiredChange(res.feedsRequiredToNext);
       }
     }
     catch (error) {
@@ -56,16 +55,48 @@ export default function GrowTab({ data, coins, setCoins, onLevelChange }) {
     }
   };
 
-  const handleEvolve = () => {
+  const handleEvolve = async () => {
     if (!evolveReady) return;
+
     if (coins < FEED_COST) {
       alert("코인이 부족합니다");
       return;
     }
-    setCoins(coins - FEED_COST);
-    onLevelChange(lv => lv + 1);
-    setFeedProgress(0);
-    setFeedsRequiredToNext(r => Math.max(1, r * 2));
+
+    setLoading(true);
+    try {
+      const res = await evolve(); 
+
+      if (res.coins != null) {
+        setCoins(res.coins);
+      } else {
+        setCoins(c => Math.max(0, c - FEED_COST));
+      }
+
+      if (res.level != null) {
+        onLevelChange(res.level);
+      } else {
+        onLevelChange(lv => lv + 1);
+      }
+
+      if (res.feedProgress != null) {
+        onFeedProgressChange(res.feedProgress);
+      } else {
+        onFeedProgressChange(0);
+      }
+
+      if (res.feedsRequiredToNext != null) {
+        onFeedsRequiredChange(res.feedsRequiredToNext);
+      } else {
+        onFeedsRequiredChange(r => Math.max(1, r * 2));
+      }
+
+      await reloadOverview();
+    } catch (e) {
+      alert("진화 실패. 다시 시도해 주세요");
+    } finally {
+      setLoading(false);
+    }
   };
 
 
@@ -75,7 +106,7 @@ export default function GrowTab({ data, coins, setCoins, onLevelChange }) {
         <LevelInfo
           profileImage={data.profileImage}
           levelText={`Level ${data.level}`}
-          titleText={data.title}
+          titleText={data.charTitle}
           percent={percent}
         />
 

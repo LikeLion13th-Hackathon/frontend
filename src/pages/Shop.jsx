@@ -1,5 +1,4 @@
-// 상점 페이지
-import { useState, useMemo, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Footer from "../components/Footer";
 import TabBar from "../components/Shop/TabBar";
 import CoinBadge from "../components/Shop/CoinBadge";
@@ -7,86 +6,79 @@ import { Page } from "../styles/Shop/Shop.styles";
 import bbiStep1 from "../assets/characters/bbiStep1.png";
 import GrowTab from "../components/Shop/GrowTab";
 import DecoTab from "../components/Shop/DecoTab";
-import { getShopOverview } from "../api/shop"
-
-import useBgShop from "../hooks/useBgShop";
-import useSkinShop from "../hooks/useSkinShop";
-import useCoins from "../hooks/useCoins";
-
 import CharacterSection from "../components/Shop/CharacterSection";
 
-// 더미
-const dummy = {
-  name: "삐약이",
-  title: "호기심 많은 삐약이",
-  level: 1,
-  characterImg: bbiStep1,
-  profileImage: bbiStep1,
-  feedProgress: 0,
-  feedsRequiredToNext: 1,
-};
+import useCharacterOverview from "../hooks/useCharacterOverview";
+import useBgShop from "../hooks/useBgShop";
+import useCoins from "../hooks/useCoins";
+import useCharShop from "../hooks/useCharShop";
+
+import { getCharImg, getCharTitle } from "../data/imageMap";
 
 export default function ShopPage() {
   const [tab, setTab] = useState("GROW");
+
+  const {
+    name,
+    setName,
+    characterId,
+    level, setLevel,
+    feedProgress, setFeedProgress,
+    feedsRequiredToNext, setFeedsRequiredToNext,
+    img, title,
+    activeBackgroundId,
+    reload: reloadOverview,
+  } = useCharacterOverview();
+
+  // 배경 상점
+  const bg = useBgShop();
+
+  // 코인
   const { coins, setCoins, reload: reloadCoins } = useCoins();
 
-  const [name, setName] = useState("캐릭터 닉네임");
-  const [level, setLevel] = useState(1);
-  const [feedProgress, setFeedProgress] = useState(0);
-  const [feedsRequiredToNext, setFeedsRequiredToNext] = useState(1);
-  const [charImg, setCharImg] = useState(bbiStep1);
-  const [charTitle, setCharTitle] = useState("");
+  // 캐릭터(스킨) 상점
+  const char = useCharShop();
 
-  const bg = useBgShop();
-  const skin = useSkinShop();
+  useEffect(() => {
+    if (activeBackgroundId != null && typeof bg.applyActiveFromOverview === "function") {
+      bg.applyActiveFromOverview(activeBackgroundId);
+    }
+  }, [activeBackgroundId]);
 
-  const activeBg = useMemo(() => bg.items.find(v => v.active), [bg.items]);
-  const activeSkin = useMemo(() => skin.items.find(v => v.active), [skin.items]);
+  const activeCharImg = useMemo(() => {
+    if (char.activeId) {
+      return getCharImg(skin.activeId, level);
+    }
+    return img || bbiStep1;
+  }, [char.activeId, level, img]);
 
-  const pageStyle = activeBg?.img
-    ? {
-      backgroundImage: `url(${activeBg.img})`,
+  const activeCharTitle = useMemo(() => {
+    if (char.activeId) {
+      return getCharTitle(char.activeId, level);
+    }
+    return title || "";
+  }, [char.activeId, level, title]);
+
+  const pageStyle = useMemo(() => {
+    if (!bg.activeImg) return undefined;
+    return {
+      backgroundImage: `url(${bg.activeImg})`,
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
-    }
-    : undefined;
+    };
+  }, [bg.activeImg]);
 
-  const loadOverview = async () => {
+  const handleEditName = async () => {
+    const next = prompt("캐릭터 이름을 입력하세요", name);
+    if (!next || !next.trim()) return;
     try {
-      const overview = await getShopOverview();
-      const char = overview?.character ?? {};
-
-      if (char.name != null) {
-        setName(char.name);
-      } else {
-        setName(char.title);
-      }
-
-      if (char.level != null) {
-        setLevel(char.level);
-      }
-
-      if (char.title != null) {
-        setCharTitle(char.title);
-      }
-
-      if (char.feedProgress != null) {
-        setFeedProgress(char.feedProgress);
-      }
-
-      if (char.feedsRequiredToNext != null) {
-        setFeedsRequiredToNext(char.feedsRequiredToNext);
-      }
-
-      const img = char.charImgUrl || char.stageImgUrl || char.characterImg || activeSkin?.img || bbiStep1;
-      setCharImg(img);
-    } catch (error) {
-      alert("상점 조회 오류. 다시 시도해 주세요");
+      await setName(next.trim());
+      await reloadOverview();
+    } catch {
+      alert("닉네임 변경 실패. 다시 시도해주세요.");
     }
-  }
-
-  useEffect(() => { loadOverview(); }, []);
+  };
 
   return (
     <Page style={pageStyle}>
@@ -96,23 +88,20 @@ export default function ShopPage() {
       <CharacterSection
         name={name}
         level={level}
-        imgSrc={charImg || activeSkin?.img || bbiStep1}
+        imgSrc={activeCharImg}
         editable={tab === "GROW"}
         variant={tab === "GROW" ? "grow" : "deco"}
-        onEditName={() => {
-          const next = prompt("캐릭터 이름을 입력하세요", name);
-          if (typeof next === "string" && next.trim()) setName(next.trim());
-        }}
+        onEditName={handleEditName}
       />
 
       {tab === "GROW" ? (
         <GrowTab
           data={{
             name,
-            charTitle,
+            charTitle: activeCharTitle,
             level,
-            profileImage: charImg || activeSkin?.img || bbiStep1,
-            characterImg: charImg || activeSkin?.img || bbiStep1,
+            profileImage: activeCharImg,
+            characterImg: activeCharImg,
             feedProgress,
             feedsRequiredToNext,
           }}
@@ -121,7 +110,7 @@ export default function ShopPage() {
           onLevelChange={setLevel}
           onFeedProgressChange={setFeedProgress}
           onFeedsRequiredChange={setFeedsRequiredToNext}
-          reloadOverview={loadOverview}
+          reloadOverview={reloadOverview}
         />
       ) : (
         <DecoTab
@@ -129,7 +118,7 @@ export default function ShopPage() {
           setCoins={setCoins}
           reloadCoins={reloadCoins}
           bg={bg}
-          skin={skin}
+          skin={char}
         />
       )}
       <Footer />

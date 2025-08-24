@@ -39,7 +39,9 @@ export default function DecoTab({ coins, setCoins, reloadCoins, bg, skin }) {
 
   const makeHandlers = (buyFn, activateFn, type) => ({
     onApply: async (id) => {
-      try { await activateFn(id); } catch {}
+      try { 
+        await activateFn(id); 
+      } catch {}
     },
     onBuy: async (id, price) => {
       if (coins < price) {
