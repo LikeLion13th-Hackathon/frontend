@@ -1,9 +1,8 @@
-// 영수증 스캔에 따른 성공/실패 여부 확인 페이지
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Header } from "../../styles/MyPage.styles";
 import ReceiptScan from "../../assets/icons/ReceiptScan.png";
-import { checkReceiptOCR } from "../../api/ocr";
+import { getReceiptOCR } from "../../api/receipt"; 
 
 function ReceiptScanning() {
   const navigate = useNavigate();
@@ -13,15 +12,17 @@ function ReceiptScanning() {
   useEffect(() => {
     const processReceipt = async () => {
       try {
-        const result = await checkReceiptOCR(missionId, receiptId);
+        const result = await getReceiptOCR(missionId, receiptId);
 
         if (result.verificationStatus === "MATCHED") {
           navigate("/receipt/confirm", { state: result });
         } else if (result.verificationStatus === "REJECTED") {
-          navigate("/receipt/fail", { state: { missionId } });
+          navigate("/receipt/fail", {
+            state: { missionId, rejectReason: result.rejectReason },
+          });
         } else {
-          // 아직 OCR PENDING이나 RUNNING이면 대기 화면 유지
-          setTimeout(processReceipt, 2000); // 2초 후 재시도 (polling)
+          // PENDING 상태면 2초 후 재시도
+          setTimeout(processReceipt, 2000);
         }
       } catch (err) {
         console.error("OCR 에러:", err);
@@ -55,7 +56,7 @@ function ReceiptScanning() {
           alignItems: "center",
         }}
       >
-        <img src={ReceiptScan} />
+        <img src={ReceiptScan} alt="스캔중" />
         <p style={{ marginTop: "5vh", fontSize: "18px", fontWeight: "700" }}>
           영수증 스캔 중...
         </p>

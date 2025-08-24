@@ -5,7 +5,7 @@ import { Button } from "../Button";
 function ReceiptFail() {
   const navigate = useNavigate();
   const location = useLocation();
-  const missionId = location.state?.missionId;
+  const { missionId, rejectReason } = location.state || {};
 
   return (
     <div
@@ -23,7 +23,9 @@ function ReceiptFail() {
         영수증 인식에 실패했어요.
       </h3>
       <InfoText style={{ marginBottom: "5vh" }}>
-        필수 정보가 잘 나오도록 촬영하여 업로드해주세요.
+        {rejectReason
+          ? `실패 사유: ${rejectReason}`
+          : "필수 정보가 잘 나오도록 촬영하여 업로드해주세요."}
       </InfoText>
       <Button
         style={{

@@ -11,6 +11,7 @@ export default function MissionList({ items = [], onClick }) {
           title={m.title}
           points={m.points}
           status={m.status}
+          badgeTextColor={m.badgeTextColor}
           onClick={() => onClick && onClick(m.id)}
         />
       ))}

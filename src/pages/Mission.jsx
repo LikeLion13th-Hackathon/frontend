@@ -14,6 +14,21 @@ import {
   fetchSpecialtyMissions,
 } from "../api/mission";
 
+// 상태 정규화
+const normalizeStatus = (status) => {
+  switch (status) {
+    case "IN_PROGRESS":
+      return "inProgress";
+    case "COMPLETED":
+      return "completed";
+    case "ABANDONED":
+      return "abandoned";
+    case "READY":
+    default:
+      return "ready";
+  }
+};
+
 export default function Mission() {
   const navigate = useNavigate();
   const [missions, setMissions] = useState([]);
@@ -25,11 +40,13 @@ export default function Mission() {
     const categoryInfo = MISSION_CATEGORY[m.category] || MISSION_CATEGORY.ETC;
     return {
       id: m.missionId,
+      apiCategory: m.category,
       category: categoryInfo.label,
       image: m.imageUrl || categoryInfo.image,
       title: m.title,
       points: m.rewardPoint,
-      status: m.status?.toLowerCase() || "ready",
+      status: normalizeStatus(m.status),
+      badgeTextColor: categoryInfo.badgeTextColor,
     };
   };
 

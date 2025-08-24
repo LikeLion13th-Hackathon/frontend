@@ -1,10 +1,29 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { InfoText } from "./ReceiptUpload";
 import { Button } from "../Button";
 import ConfettiExplosion from "react-confetti-explosion";
+import { completeMission } from "../../api/mission";
 
 function ReceiptSuccess() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { missionId, receiptId } = location.state || {};
+
+  useEffect(() => {
+    const complete = async () => {
+      if (!missionId || !receiptId) return;
+
+      try {
+        await completeMission(missionId, receiptId);
+        console.log("미션 완료 API 호출 성공");
+      } catch (err) {
+        console.error("미션 완료 API 호출 실패:", err);
+      }
+    };
+
+    complete();
+  }, [missionId, receiptId]);
 
   return (
     <div

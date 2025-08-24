@@ -30,7 +30,6 @@ import {
   fetchLandmarkMissionDetail,
   fetchSpecialtyMissionDetail,
   startMission,
-  completeMission,
   abandonMission,
 } from "../api/mission";
 
@@ -40,7 +39,7 @@ const normalizeStatus = (status) => {
     case "READY":
       return "ready";
     case "IN_PROGRESS":
-      return "inprogress";
+      return "inProgress";
     case "COMPLETED":
       return "completed";
     case "ABANDONED":
@@ -97,8 +96,9 @@ function MissionDetail() {
         console.error("미션 상세 불러오기 실패:", err);
       }
     };
+
     loadMission();
-  }, [id, category]);
+  }, [id, category, location.key]);
 
   if (!mission) return <div>미션 정보를 불러오는 중...</div>;
 
@@ -113,7 +113,7 @@ function MissionDetail() {
         <Card>
           <TagRow>
             <TagGroup>
-              {status === "inprogress" && (
+              {status === "inProgress" && (
                 <Badge style={{ backgroundColor: "#FF4E69" }}>진행 중</Badge>
               )}
               {status === "completed" && (
@@ -192,7 +192,7 @@ function MissionDetail() {
           </Button>
         )}
 
-        {status === "inprogress" && (
+        {status === "inProgress" && (
           <>
             <Button
               style={{ width: "100%" }}
@@ -205,7 +205,7 @@ function MissionDetail() {
                 navigate(`/receipt/upload/${mission.id}`);
               }}
             >
-              영수증 인증하기(api 고쳐야댐)
+              영수증 인증하기
             </Button>
             <Button
               style={{ width: "100%", backgroundColor: "#FF4E69" }}
