@@ -1,13 +1,13 @@
 // 상점 페이지
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Footer from "../components/Footer";
 import TabBar from "../components/Shop/TabBar";
 import CoinBadge from "../components/Shop/CoinBadge";
 import { Page } from "../styles/Shop/Shop.styles";
-import BbiBasic from "../assets/characters/bbi_basic.png";
-import spiderman from "../assets/임시.jpg";
+import bbiStep1 from "../assets/characters/bbiStep1.png";
 import GrowTab from "../components/Shop/GrowTab";
 import DecoTab from "../components/Shop/DecoTab";
+import { getShopOverview } from "../api/shop"
 
 import useBgShop from "../hooks/useBgShop";
 import useSkinShop from "../hooks/useSkinShop";
@@ -19,18 +19,23 @@ import CharacterSection from "../components/Shop/CharacterSection";
 const dummy = {
   name: "삐약이",
   title: "호기심 많은 삐약이",
-  level: 3,
-  characterImg: BbiBasic,
-  profileImage: spiderman,
-  feedProgress: 2,
-  feedsRequiredToNext: 4,
+  level: 1,
+  characterImg: bbiStep1,
+  profileImage: bbiStep1,
+  feedProgress: 0,
+  feedsRequiredToNext: 1,
 };
 
 export default function ShopPage() {
   const [tab, setTab] = useState("GROW");
   const { coins, setCoins, reload: reloadCoins } = useCoins();
-  const [name, setName] = useState(dummy.name);
-  const [level, setLevel] = useState(dummy.level);
+
+  const [name, setName] = useState("캐릭터 닉네임");
+  const [level, setLevel] = useState(1);
+  const [feedProgress, setFeedProgress] = useState(0);
+  const [feedsRequiredToNext, setFeedsRequiredToNext] = useState(1);
+  const [charImg, setCharImg] = useState(bbiStep1);
+  const [charTitle, setCharTitle] = useState("");
 
   const bg = useBgShop();
   const skin = useSkinShop();
@@ -40,12 +45,48 @@ export default function ShopPage() {
 
   const pageStyle = activeBg?.img
     ? {
-        backgroundImage: `url(${activeBg.img})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }
+      backgroundImage: `url(${activeBg.img})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+    }
     : undefined;
+
+  const loadOverview = async () => {
+    try {
+      const overview = await getShopOverview();
+      const char = overview?.character ?? {};
+
+      if (char.name != null) {
+        setName(char.name);
+      } else {
+        setName(char.title);
+      }
+
+      if (char.level != null) {
+        setLevel(char.level);
+      }
+
+      if (char.title != null) {
+        setCharTitle(char.title);
+      }
+
+      if (char.feedProgress != null) {
+        setFeedProgress(char.feedProgress);
+      }
+
+      if (char.feedsRequiredToNext != null) {
+        setFeedsRequiredToNext(char.feedsRequiredToNext);
+      }
+
+      const img = char.charImgUrl || char.stageImgUrl || char.characterImg || activeSkin?.img || bbiStep1;
+      setCharImg(img);
+    } catch (error) {
+      alert("상점 조회 오류. 다시 시도해 주세요");
+    }
+  }
+
+  useEffect(() => { loadOverview(); }, []);
 
   return (
     <Page style={pageStyle}>
@@ -55,7 +96,7 @@ export default function ShopPage() {
       <CharacterSection
         name={name}
         level={level}
-        imgSrc={activeSkin?.img || BbiBasic}
+        imgSrc={charImg || activeSkin?.img || bbiStep1}
         editable={tab === "GROW"}
         variant={tab === "GROW" ? "grow" : "deco"}
         onEditName={() => {
@@ -67,21 +108,28 @@ export default function ShopPage() {
       {tab === "GROW" ? (
         <GrowTab
           data={{
-            ...dummy,
             name,
+            charTitle,
             level,
-            characterImg: activeSkin?.img || dummy.characterImg,
+            profileImage: charImg || activeSkin?.img || bbiStep1,
+            characterImg: charImg || activeSkin?.img || bbiStep1,
+            feedProgress,
+            feedsRequiredToNext,
           }}
           coins={coins}
           setCoins={setCoins}
+          onLevelChange={setLevel}
+          onFeedProgressChange={setFeedProgress}
+          onFeedsRequiredChange={setFeedsRequiredToNext}
+          reloadOverview={loadOverview}
         />
       ) : (
-        <DecoTab 
+        <DecoTab
           coins={coins}
           setCoins={setCoins}
           reloadCoins={reloadCoins}
           bg={bg}
-          skin={skin} 
+          skin={skin}
         />
       )}
       <Footer />

@@ -13,7 +13,7 @@ import {
 } from "../../styles/Shop/GrowTab.styles";
 import defaultProfile from "../../assets/default-profile.png";
 
-export default function LevelInfo({ profileImage, levelText, nameText, percent }) {
+export default function LevelInfo({ profileImage, levelText, titleText, percent }) {
   const clamped = Math.max(0, Math.min(100, Number(percent) || 0));
   const remain = +(100 - clamped).toFixed(1);
 
@@ -32,7 +32,7 @@ export default function LevelInfo({ profileImage, levelText, nameText, percent }
         <XPHeader>
           <XPTitles>
             <LevelEm>{levelText}</LevelEm>
-            <XPName>{nameText}</XPName>
+            <XPName>{titleText}</XPName>
           </XPTitles>
           <XPPercent>{clamped.toFixed(1)}%</XPPercent>
         </XPHeader>
