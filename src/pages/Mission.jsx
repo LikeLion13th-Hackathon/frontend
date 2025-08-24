@@ -1,5 +1,5 @@
 // 미션 목록 페이지
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { CategoryTabs, CategoryButton } from "../styles/Mission.styles";
 import LocationBar from "../components/Mission/LocationBar";
@@ -12,7 +12,11 @@ import {
   fetchRestaurantMissions,
   fetchLandmarkMissions,
   fetchSpecialtyMissions,
+  fetchAIMissions,
 } from "../api/mission";
+
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // 상태 정규화
 const normalizeStatus = (status) => {
@@ -29,11 +33,18 @@ const normalizeStatus = (status) => {
   }
 };
 
+// 완료 미션 수 카운트
+const countCompletedMissions = (missions) =>
+  missions.filter((m) => m.status === "completed").length;
+
 export default function Mission() {
   const navigate = useNavigate();
   const [missions, setMissions] = useState([]);
   const [activeTab, setActiveTab] = useState("전체");
   const [location, setLocation] = useState("위치 확인 중…");
+
+  // 이미 추가된 AI 미션 추적 (중복 방지)
+  const addedAIMissionsRef = useRef(0);
 
   // API에서 불러온 카테고리 매핑
   const mapMission = (m) => {
@@ -50,18 +61,16 @@ export default function Mission() {
     };
   };
 
-  // 모든 미션 불러오기
+  // 모든 미션 불러오기 (초기 로딩)
   useEffect(() => {
     const loadAllMissions = async () => {
       try {
-        const [custom, restaurants, landmarks, specialties] = await Promise.all(
-          [
-            fetchCustomMissions(),
-            fetchRestaurantMissions(),
-            fetchLandmarkMissions(),
-            fetchSpecialtyMissions(),
-          ]
-        );
+        const custom = await fetchCustomMissions();
+        const [restaurants, landmarks, specialties] = await Promise.all([
+          fetchRestaurantMissions(),
+          fetchLandmarkMissions(),
+          fetchSpecialtyMissions(),
+        ]);
 
         const combined = [
           ...(custom || []).map(mapMission),
@@ -75,9 +84,10 @@ export default function Mission() {
         console.error("미션 불러오기 실패:", err);
       }
     };
+
     loadAllMissions();
 
-    // 위치 가져오기 (카카오맵 API)
+    // 위치 가져오기
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -97,7 +107,31 @@ export default function Mission() {
     }
   }, []);
 
-  // 카테고리 (탭 구분)
+  // 완료된 미션 3개마다 AI 미션 자동 활성화 + 알림
+  useEffect(() => {
+    const completedCount = countCompletedMissions(missions);
+
+    if (
+      completedCount >= 3 &&
+      completedCount % 3 === 0 &&
+      completedCount / 3 > addedAIMissionsRef.current
+    ) {
+      fetchAIMissions()
+        .then((aiMissions) => {
+          const newAIMissions = (aiMissions || []).map(mapMission);
+          setMissions((prev) => [...prev, ...newAIMissions]);
+          addedAIMissionsRef.current += 1;
+
+          toast.success(
+            `완료된 3개의 미션을 기반으로 AI 추천 미션 ${newAIMissions.length}개가 추가되었어요!`,
+            { position: "top-center", autoClose: 3000 }
+          );
+        })
+        .catch((err) => console.error("AI 미션 불러오기 실패:", err));
+    }
+  }, [missions]);
+
+  // 카테고리 탭
   const categories = [
     "전체",
     ...Object.values(MISSION_CATEGORY).map((c) => c.label),
@@ -111,6 +145,9 @@ export default function Mission() {
 
   return (
     <>
+      {/* 토스트 컨테이너 */}
+      <ToastContainer />
+
       <h3 style={{ textAlign: "center" }}>미션</h3>
 
       {/* 카테고리 탭 */}
@@ -149,6 +186,7 @@ export default function Mission() {
           작은 소비가 모여 우리 동네를 깨워요.
         </InfoText>
       </div>
+
       <Footer />
     </>
   );

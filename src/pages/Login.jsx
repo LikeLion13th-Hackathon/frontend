@@ -10,7 +10,7 @@ import {
   SignUpLink,
 } from "../styles/Login.styles";
 import { Button } from "../components/Button";
-import BbiBasic from "../assets/characters/bbi_basic.png";
+import bbiStep1 from "../assets/characters/bbiStep1.png";
 import MainLogo from "../assets/characters/Logo.png";
 import { login } from "../api/auth";
 
@@ -96,7 +96,7 @@ function Login() {
     <Container>
       <img src={MainLogo} alt="타이틀" style={{ width: "18vh" }} />
       <TitleSmall>소개문구 소개문구 소개문구</TitleSmall>
-      <BbiImg src={BbiBasic} />
+      <BbiImg src={bbiStep1} />
 
       <Input
         type="email"

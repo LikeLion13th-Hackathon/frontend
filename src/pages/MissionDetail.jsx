@@ -119,9 +119,7 @@ function MissionDetail() {
               {status === "completed" && (
                 <Badge style={{ backgroundColor: "#4CAF50" }}>완료됨</Badge>
               )}
-              {status === "abandoned" && (
-                <Badge style={{ backgroundColor: "#999" }}>포기됨</Badge>
-              )}
+
               <Badge
                 style={{
                   backgroundColor:
@@ -174,7 +172,7 @@ function MissionDetail() {
         </Card>
 
         {/* 버튼 영역 */}
-        {status === "ready" && (
+        {(status === "ready" || status === "abandoned") && (
           <Button
             style={{ width: "100%" }}
             onClick={async () => {
@@ -222,12 +220,6 @@ function MissionDetail() {
             disabled
           >
             완료된 미션
-          </Button>
-        )}
-
-        {status === "abandoned" && (
-          <Button style={{ width: "100%", backgroundColor: "#999" }} disabled>
-            포기한 미션
           </Button>
         )}
       </Container>
