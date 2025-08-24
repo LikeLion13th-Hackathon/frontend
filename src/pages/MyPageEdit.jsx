@@ -57,7 +57,8 @@ export default function MyPageEdit() {
   // 현재 연도 & 선택한 연/월에 맞는 일 수 계산
   const thisYear = new Date().getFullYear();
   const daysInMonth = (y, m) => new Date(Number(y), Number(m), 0).getDate(); // m: 1~12
-  const dayCount = birthYear && birthMonth ? daysInMonth(birthYear, birthMonth) : 31;
+  const dayCount =
+    birthYear && birthMonth ? daysInMonth(birthYear, birthMonth) : 31;
 
   // 월/년 바뀔 때 기존 day가 초과면 보정
   useEffect(() => {
@@ -67,18 +68,25 @@ export default function MyPageEdit() {
   }, [birthYear, birthMonth, birthDay, setBirthDay]);
 
   const yearOptions = useMemo(
-    () => Array.from({ length: 100 }, (_, i) => thisYear - i)
-               .map((y) => ({ value: String(y), label: String(y) })),
+    () =>
+      Array.from({ length: 100 }, (_, i) => thisYear - i).map((y) => ({
+        value: String(y),
+        label: String(y),
+      })),
     [thisYear]
   );
   const monthOptions = useMemo(
-    () => Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0"))
-               .map((m) => ({ value: m, label: m })),
+    () =>
+      Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")).map(
+        (m) => ({ value: m, label: m })
+      ),
     []
   );
   const dayOptions = useMemo(
-    () => Array.from({ length: dayCount }, (_, i) => String(i + 1).padStart(2, "0"))
-               .map((d) => ({ value: d, label: d })),
+    () =>
+      Array.from({ length: dayCount }, (_, i) =>
+        String(i + 1).padStart(2, "0")
+      ).map((d) => ({ value: d, label: d })),
     [dayCount]
   );
 
@@ -142,7 +150,6 @@ export default function MyPageEdit() {
         return prev.filter((p) => p !== place);
       } else {
         if (prev.length >= 3) {
-          // ✅ 중복 실행 방지 → toast는 한 번만 뜨도록
           toast.warn("최대 3곳까지만 선택할 수 있습니다.", {
             toastId: "max-places",
             autoClose: 2000,
@@ -160,9 +167,9 @@ export default function MyPageEdit() {
     const birthDate =
       birthYear && birthMonth && birthDay
         ? `${birthYear}-${birthMonth.padStart(2, "0")}-${birthDay.padStart(
-          2,
-          "0"
-        )}`
+            2,
+            "0"
+          )}`
         : "";
 
     const payload = {
@@ -225,7 +232,9 @@ export default function MyPageEdit() {
             <Select
               placeholder="출생 월"
               options={monthOptions}
-              value={birthMonth ? { value: birthMonth, label: birthMonth } : null}
+              value={
+                birthMonth ? { value: birthMonth, label: birthMonth } : null
+              }
               onChange={(opt) => {
                 setBirthMonth(opt?.value || "");
               }}

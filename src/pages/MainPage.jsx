@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Page } from "../styles/MainPage.styles";
+import TutorialModal from "../components/MainPage/TutorialModal";
 import MainPageHeader from "../components/MainPage/MainPageHeader";
 import CharacterCard from "../components/MainPage/CharacterCard";
 import BbiBasic from "../assets/characters/bbi_basic.png";
@@ -25,6 +26,15 @@ function MainPage() {
   const [homeCard, setHomeCard] = useState(null);
   const [userName, setUserName] = useState("");
 
+  // 튜토리얼 모달창 관련
+  const [tutorialOpen, setTutorialOpen] = useState(false);
+  useEffect(() => {
+    const seen = localStorage.getItem("tutorialSeen");
+    if (!seen) {
+      setTutorialOpen(true);
+    }
+  }, []);
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -46,15 +56,22 @@ function MainPage() {
   return (
     <>
       <Container>
-        <MainPageHeader coins={homeCard?.coins} userName={userName} />
+        <MainPageHeader
+          coins={homeCard?.coins}
+          userName={userName}
+          onHelpClick={() => setTutorialOpen(true)}
+        />
         <Page>
           {homeCard && (
             <CharacterCard
               bg={`url(${BACKGROUND_MAP[homeCard.backgroundName] || BgEx})`}
-              levelText={`Level ${homeCard.level}`}
+              levelText={`Level ${homeCard.character.level}`}
               name={homeCard.characterName}
-              progress={homeCard.expPercent}
-              characterSrc={BbiBasic}
+              progress={
+                (homeCard.character.feedProgress /
+                  homeCard.character.feedsRequiredToNext) *
+                100
+              }
               onClick={() => navigate("/shop")}
             />
           )}
@@ -68,18 +85,26 @@ function MainPage() {
             const categoryInfo =
               MISSION_CATEGORY[m.category] || MISSION_CATEGORY.ETC;
             return {
-              id: m.id,
+              id: m.missionId,
               category: categoryInfo.label,
               image: categoryInfo.image,
               title: m.title,
               points: m.rewardPoint,
               badgeTextColor: categoryInfo.badgeTextColor,
+              status: m.status,
             };
           })}
           onClick={(id) => navigate(`/mission/${id}`)}
         />
       </Container>
       <Footer />
+      <TutorialModal
+        open={tutorialOpen}
+        onClose={() => {
+          setTutorialOpen(false);
+          localStorage.setItem("tutorialSeen", "true");
+        }}
+      />
     </>
   );
 }
