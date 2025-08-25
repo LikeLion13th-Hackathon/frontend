@@ -29,7 +29,7 @@ export const Content = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 3vh;
+  padding: 2vh;
 `;
 
 // 레벨 / 이름 / 진행바
@@ -70,7 +70,7 @@ export const ProgressBar = styled.div`
 // 캐릭터
 export const Character = styled.img`
   align-self: center;
-  width: 55%;
+  width: 40%;
 `;
 
 export default function CharacterCard({
@@ -78,7 +78,7 @@ export default function CharacterCard({
   levelText = "Level 3",
   name = "삐약이",
   progress = 87.2,
-  characterSrc,
+  imgSrc,
   onClick,
 }) {
   return (
@@ -88,7 +88,6 @@ export default function CharacterCard({
       tabIndex={0}
       onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onClick?.()}
     >
-      {" "}
       <BgImg $bg={bg} />
       <Content>
         <div>
@@ -101,7 +100,7 @@ export default function CharacterCard({
             <ProgressBar $value={progress} />
           </ProgressWrap>
         </div>
-        {characterSrc && <Character src={characterSrc} />}
+        {imgSrc && <Character src={imgSrc} />}
       </Content>
     </Card>
   );

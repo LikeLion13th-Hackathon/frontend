@@ -1,59 +1,13 @@
-import axios from "axios";
+import instance from "./axiosInstance";
 
-// 로그인 요청
+// 로그인
 export const login = async ({ email, password }) => {
-  const response = await axios.post(
-    `${process.env.REACT_APP_API_URL}/api/auth/login`,
-    { email, password },
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  return response.data;
+  const { data } = await instance.post("/api/auth/login", { email, password });
+  return data;
 };
 
-// 회원가입 요청
-export const signup = async ({
-  email,
-  password,
-  nickname,
-  birthDate,
-  role,
-  isOver14,
-  locationConsent,
-  marketingConsent,
-  serviceAgreed,
-  privacyAgreed,
-  sido,
-  sigungu,
-  dong,
-  places,
-}) => {
-  const response = await axios.post(
-    `${process.env.REACT_APP_API_URL}/api/auth/signup`,
-    {
-      email,
-      password,
-      nickname,
-      birthDate,
-      role,
-      isOver14,
-      locationConsent,
-      marketingConsent,
-      serviceAgreed,
-      privacyAgreed,
-      sido,
-      sigungu,
-      dong,
-      places,
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  return response.data;
+// 회원가입
+export const signup = async (payload) => {
+  const { data } = await instance.post("/api/auth/signup", payload);
+  return data;
 };

@@ -15,11 +15,11 @@ export const TitleSmall = styled.p`
   font-weight: 500;
   color: #767676;
   margin-top: 1vh;
-  margin-bottom: 5vh;
+  margin-bottom: 2vh;
 `;
 
 export const Input = styled.input`
-  width: 75vw;
+  width: 80vw;
   max-width: 360px;
   height: 7vh;
   padding: 2vh;
@@ -44,7 +44,7 @@ const float = keyframes`
   100% { transform: translateY(0); }
 `;
 export const BbiImg = styled.img`
-  width: 21vh;
-  margin-bottom: 4vh;
+  width: 17vh;
+  margin-bottom: 2vh;
   animation: ${float} 3s ease-in-out infinite;
 `;

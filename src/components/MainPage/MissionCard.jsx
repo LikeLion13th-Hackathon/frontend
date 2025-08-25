@@ -1,14 +1,15 @@
-// 미션카드
+// 미션 카드
 import styled from "styled-components";
 import { MISSION_CATEGORY } from "../../constants/missionCategory.js";
 import Coin from "../../assets/icons/coin.png";
+import { Badge } from "../../styles/MissionDetail.styles.js";
 
 export const Card = styled.div`
   position: relative;
   border-radius: 16px;
   box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  margin-bottom: 1.5vh;
+  margin-bottom: 1.8vh;
   cursor: pointer;
 `;
 
@@ -22,7 +23,7 @@ export const Media = styled.div`
 `;
 
 // 미션 설명 영역
-export const Badge = styled.span`
+export const DBadge = styled.span`
   position: absolute;
   left: 10px;
   bottom: -14px;
@@ -57,13 +58,25 @@ export const FooterRow = styled.div`
   font-size: 14px;
 `;
 
+const StatusBadge = styled(Badge)`
+  top: 10px;
+  left: 10px;
+  bottom: auto;
+  position: absolute;
+  z-index: 999;
+  border-radius: 12px;
+  color: white;
+  background-color: #ebf0f7;
+`;
+
 export default function MissionCard({
   category,
   image,
   badgeLabel,
   badgeTextColor,
   title,
-  points = 200,
+  points,
+  status,
   onClick,
 }) {
   const theme = (category && MISSION_CATEGORY[category]) || {};
@@ -73,8 +86,17 @@ export default function MissionCard({
 
   return (
     <Card onClick={onClick}>
+      {status === "inProgress" && (
+        <StatusBadge style={{ backgroundColor: "#FF4E69" }}>
+          진행 중
+        </StatusBadge>
+      )}
+      {status === "completed" && (
+        <StatusBadge style={{ backgroundColor: "#4CAF50" }}>완료됨</StatusBadge>
+      )}
+
       <Media $src={bgSrc}>
-        <Badge $text={badgeColorUse}>{label}</Badge>
+        <DBadge $text={badgeColorUse}>{label}</DBadge>
       </Media>
       <Body>
         <Title>{title}</Title>

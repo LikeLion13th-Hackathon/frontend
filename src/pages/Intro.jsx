@@ -14,7 +14,6 @@ import { Button } from "../components/Button";
 import Slide1 from "../assets/slides/Slide1.png";
 import Slide2 from "../assets/slides/Slide2.png";
 import Slide3 from "../assets/slides/Slide3.png";
-import Slide4 from "../assets/slides/Slide4.png";
 
 function Home() {
   // 페이지 이동 관리
@@ -28,7 +27,6 @@ function Home() {
     { id: 1, img: Slide1 },
     { id: 2, img: Slide2 },
     { id: 3, img: Slide3 },
-    { id: 4, img: Slide4 },
   ];
 
   // 슬라이드 관리
@@ -56,6 +54,7 @@ function Home() {
               key={slide.id}
               style={{
                 flex: "0 0 100%",
+                height: "100%",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -64,8 +63,8 @@ function Home() {
               <img
                 src={slide.img}
                 style={{
-                  maxWidth: "100%",
-                  maxHeight: "100%",
+                  maxWidth: "90%",
+                  maxHeight: "90%",
                   objectFit: "contain",
                 }}
               />

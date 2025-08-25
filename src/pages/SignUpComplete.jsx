@@ -2,7 +2,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/Button";
-import BbiBasic from "../assets/characters/bbi_basic.png";
+import bbiStep2 from "../assets/characters/bbiStep3.png";
 
 export const Container = styled.div`
   min-height: 100dvh;
@@ -16,7 +16,7 @@ export const TitleSmall = styled.p`
   margin-top: 2vh;
   margin-bottom: 12vh;
   font-size: 20px;
-  font-weight: bold;
+  font-weight: 600;
   color: #000;
 `;
 
@@ -40,8 +40,9 @@ export default function SignupComplete() {
 
   return (
     <Container>
-      <img src={BbiBasic} style={{ width: "40%" }} />
-      <TitleSmall>회원가입이 완료되었습니다!</TitleSmall>
+      <img src={bbiStep2} style={{ width: "35%" }} />
+      <div style={{ color: "#767676" }}>그냥 사는 대로, 쌓이는 재미</div>
+      <TitleSmall>회원가입이 완료되었어요!</TitleSmall>
       <Button onClick={handleLoginClick} style={{ marginBottom: "1.5vh" }}>
         로그인
       </Button>

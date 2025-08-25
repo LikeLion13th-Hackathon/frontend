@@ -7,7 +7,8 @@ import {
   Required,
   AgreementBody,
   ToggleText,
-} from "../../styles/AgreementSection.styles"; import { CiCircleCheck } from "react-icons/ci";
+} from "../../styles/AgreementSection.styles"; 
+import { CiCircleCheck } from "react-icons/ci";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AgreementItem({ id, label, required, checked, onToggle, children }) {

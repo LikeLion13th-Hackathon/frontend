@@ -1,5 +1,5 @@
 // 마이페이지
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FiChevronRight } from "react-icons/fi";
@@ -11,7 +11,6 @@ import {
   UserInfo,
   Name,
   Email,
-  BackIcon,
   Divider,
   Section,
   SectionTitle,
@@ -22,40 +21,52 @@ import {
   ChangeText,
   SettingItem,
 } from "../styles/MyPage.styles";
+import MainLogoHeight from "../assets/logo/MainLogoHeight.png";
 import Footer from "../components/Footer";
-// import { fetchMyProfile } from "../api/user";
+import { fetchMyProfile } from "../api/mypage";
+import ScreenLoader from "../components/ScreenLoader";
 
 function MyPage() {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // ‼️ API 대신 하드코딩된 사용자 정보 (명세서 나오면 바꾸기!)
-  const [user] = useState({
-    nickname: "테스트",
-    email: "test@test.com",
-    birthdate: "2000-01-01",
-    job: "학생",
-  });
+  // 유저 조회
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchMyProfile();
+        setUser(data);
+      } catch (err) {
+        console.error("프로필 불러오기 실패:", err);
+        toast.error("프로필을 불러오지 못했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadUser();
+  }, []);
 
   // 로그아웃
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("tokenType");
     localStorage.removeItem("user");
+    localStorage.removeItem("tutorialSeen");
     toast.success("정상적으로 로그아웃되었습니다.", { autoClose: 2000 });
-    navigate("/");
+    navigate("/login");
   };
 
-  if (!user) return <div>Loading...</div>;
-
-  const { nickname, email, birthdate, job } = user;
+  const { nickname = "", email = "", birthDate = "", job = "" } = user || {};
 
   return (
     <>
+      <ScreenLoader show={loading} />
       <Container>
         <Header>
-          <BackIcon size={20} onClick={() => navigate(-1)} />
           <h3>마이페이지</h3>
         </Header>
-
         <ProfileSection>
           <FaUserCircle size={46} style={{ color: "#767676" }} />
           <UserInfo>
@@ -63,9 +74,7 @@ function MyPage() {
             <Email>{email}</Email>
           </UserInfo>
         </ProfileSection>
-
         <Divider />
-
         <Section>
           <SectionTitle>내 정보</SectionTitle>
           <InfoItem>
@@ -74,29 +83,30 @@ function MyPage() {
           </InfoItem>
           <InfoItem>
             <Label>생년월일</Label>
-            <Value>{birthdate}</Value>
+            <Value>{birthDate}</Value>
           </InfoItem>
           <InfoItem>
             <Label>직업</Label>
             <Value>{job}</Value>
           </InfoItem>
           <ChangeSection>
-            <ChangeText onClick={() => navigate("/mypage/edit-profile")}>
+            <ChangeText onClick={() => navigate("/mypage/edit")}>
               변경하기
             </ChangeText>
             <FiChevronRight style={{ color: "#767676", marginTop: "1.5px" }} />
           </ChangeSection>
         </Section>
-
         <Divider />
-
         <Section>
           <SectionTitle>미션 관리</SectionTitle>
-          <SettingItem>
+          <SettingItem onClick={() => navigate("/missions/ongoing")}>
             진행 중인 미션 <FiChevronRight />
           </SettingItem>
-          <SettingItem>
+          <SettingItem onClick={() => navigate("/missions/completed")}>
             완료한 미션 <FiChevronRight />
+          </SettingItem>
+          <SettingItem onClick={() => navigate("/stats")}>
+            내 소비/미션 통계 <FiChevronRight />
           </SettingItem>
 
           <Divider />
@@ -108,6 +118,22 @@ function MyPage() {
             로그아웃 <FiChevronRight />
           </SettingItem>
         </Section>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: "14vh",
+            marginBottom: "12vh",
+            fontSize: "14px",
+            color: "#999",
+          }}
+        >
+          <img src={MainLogoHeight} style={{ width: "28vh" }} />
+          그냥 사는 대로, 쌓이는 재미
+        </div>
       </Container>
       <Footer />
     </>

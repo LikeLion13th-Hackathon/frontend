@@ -13,20 +13,25 @@ export const Container = styled.div`
 export const DotWrapper = styled.div`
   display: flex;
   gap: 8px;
+  margin-top: 2vh;
+  margin-bottom: 2vh;
 `;
 
 export const Dot = styled.div`
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background-color: ${({ $active }) => ($active ? "#000000" : "#e7e323")};
+  background-color: ${({ $active }) => ($active ? "#1e0066" : "#ccc")};
 `;
 
 export const ButtonWrapper = styled.div`
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 5vh;
   opacity: ${(props) => (props.$show ? 1 : 0)};
   transition: opacity 0.8s ease;
   transition-delay: ${(props) => (props.$show ? "0.5s" : "0s")};

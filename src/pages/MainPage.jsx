@@ -1,80 +1,150 @@
-// 메인페이지
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { Container, Page } from "../styles/MainPage.styles";
+import TutorialModal from "../components/MainPage/TutorialModal";
 import MainPageHeader from "../components/MainPage/MainPageHeader";
 import CharacterCard from "../components/MainPage/CharacterCard";
-import BbiBasic from "../assets/characters/bbi_basic.png";
-import BgEx from "../assets/backgrounds/BackgroundEx.png";
 import MissionList from "../components/MainPage/MissionList";
-import Restaurant from "../assets/backgrounds/Restaurant.png";
-import Park from "../assets/backgrounds/Park.png";
 import Footer from "../components/Footer";
 
-function MainPage() {
+import { fetchCustomMissionsLimited } from "../api/mainPage";
+import { fetchMyProfile } from "../api/mypage";
+import { MISSION_CATEGORY } from "../constants/missionCategory";
+
+import useCharacterOverview from "../hooks/useCharacterOverview";
+import useCoins from "../hooks/useCoins";
+import { getBgImg } from "../data/imageMap";
+import ScreenLoader from "../components/ScreenLoader";
+
+export default function MainPage() {
   const navigate = useNavigate();
 
-  // 토큰 없으면 로그인 페이지로 리다이렉션
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   if (!token || token === "null" || token.trim() === "") {
-  //     navigate("/login");
-  //     toast.warn("로그인이 필요합니다.", { autoClose: 2000 });
-  //   }
-  // }, [navigate]);
+  const {
+    name,            // 서버 닉네임
+    title,           // 레벨/스킨에 따른 타이틀
+    level,
+    img,             // 레벨/스킨 매핑된 이미지
+    activeBackgroundId,
+    feedProgress,
+    feedsRequiredToNext,
+    loading: overviewLoading,
+  } = useCharacterOverview();
 
-  // 미션 더미데이터 (나중에 API로 교체)
-  const [missions, setMissions] = useState([
-    {
-      id: "1",
-      category: "맞춤미션",
-      image: Restaurant,
-      title: "00동 음식점에서 7000원 이상 결제하기",
-      points: 100,
-    },
-    {
-      id: "2",
-      category: "지역명소",
-      image: Park,
-      title: "ㅁㅁ구 박물관 방문하기",
-      points: 300,
-    },
-    {
-      id: "3",
-      category: "기타",
-      image: Park,
-      title: "기타 기타 기타",
-      points: 500,
-    },
-  ]);
+  const { coins } = useCoins();
+
+  const [missions, setMissions] = useState([]);
+  const [userName, setUserName] = useState("");
+  const [tutorialOpen, setTutorialOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // 튜토리얼 모달 체크
+  useEffect(() => {
+    const globalSeen = localStorage.getItem("tutorialSeen_global");
+    if (!globalSeen) {
+      setTutorialOpen(true);
+      localStorage.setItem("tutorialSeen_global", "true");
+      return;
+    }
+    const loginSeen = localStorage.getItem("tutorialSeen_login");
+    if (loginSeen === "false") {
+      setTutorialOpen(true);
+      localStorage.setItem("tutorialSeen_login", "true");
+    }
+  }, []);
+
+  // 추천 미션 + 프로필만 불러옴 (캐릭터는 훅이 담당)
+  useEffect(() => {
+    let aborted = false;
+    (async () => {
+      try {
+        setLoading(true);
+        const [missionsData, profileData] = await Promise.all([
+          fetchCustomMissionsLimited(3),
+          fetchMyProfile(),
+        ]);
+        if (aborted) return;
+        setMissions(missionsData || []);
+        setUserName(profileData?.nickname || "게스트");
+      } catch (e) {
+        console.error("메인페이지 데이터 로딩 실패:", e);
+      } finally {
+        setLoading(false);
+      }
+    })();
+    return () => { aborted = true; };
+  }, []);
+
+  // 게이지 계산 (feed / (feed + need))
+  const progressPercent = (() => {
+    const cur = Number(feedProgress ?? 0);
+    const need = Number(feedsRequiredToNext ?? 0);
+    const denom = Math.max(1, cur + need);
+    return Math.min(100, Math.round((cur / denom) * 100));
+  })();
 
   return (
     <>
       <Container>
-        <MainPageHeader />
+        <MainPageHeader
+          coins={coins}
+          userName={userName}
+          onHelpClick={() => setTutorialOpen(true)}
+        />
+
+        {/* 캐릭터 카드 */}
         <Page>
-          <CharacterCard
-            bg={`url(${BgEx})`}
-            levelText="Level 3"
-            name="삐약이"
-            progress={87.2}
-            characterSrc={BbiBasic}
-            onClick={() => navigate("/shop")}
-          />
+          {!overviewLoading && (
+            <CharacterCard
+              bg={`url(${getBgImg(activeBackgroundId)})`}
+              levelText={`Level ${level}`}
+              name={name || title}
+              progress={progressPercent}
+              imgSrc={img}
+              onClick={() => navigate("/shop")}
+            />
+          )}
         </Page>
 
+        {/* 오늘의 추천 미션 */}
         <h2 style={{ fontSize: "18px", margin: "18px 6px 10px" }}>
-          오늘의 미션
+          오늘의 추천 미션
         </h2>
         <MissionList
-          items={missions}
-          onClick={(id) => navigate(`/mission/${id}`)}
+          items={(missions || []).map((m) => {
+            const categoryInfo =
+              MISSION_CATEGORY[m.category] || MISSION_CATEGORY.ETC;
+            return {
+              id: m.missionId,
+              apiCategory: m.category,
+              category: categoryInfo.label,
+              image: categoryInfo.image,
+              title: m.title,
+              points: m.rewardPoint,
+              badgeTextColor: categoryInfo.badgeTextColor,
+              status: m.status,
+            };
+          })}
+          onClick={(id) => {
+            const selected = missions.find((m) => m.missionId === id);
+            navigate(`/mission/${id}`, {
+              state: { category: selected?.category },
+            });
+          }}
         />
       </Container>
+
       <Footer />
+
+      <TutorialModal
+        open={tutorialOpen}
+        onClose={() => {
+          setTutorialOpen(false);
+          localStorage.setItem("tutorialSeen", "true");
+        }}
+      />
+
+      {/* 캐릭터/미션 로딩 모두 표시 */}
+      <ScreenLoader show={loading || overviewLoading} />
     </>
   );
 }
-
-export default MainPage;
