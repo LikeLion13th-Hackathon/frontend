@@ -21,6 +21,7 @@ import {
   ChangeText,
   SettingItem,
 } from "../styles/MyPage.styles";
+import MainLogoHeight from "../assets/logo/MainLogoHeight.png";
 import Footer from "../components/Footer";
 import { fetchMyProfile } from "../api/mypage";
 
@@ -62,7 +63,6 @@ function MyPage() {
         <Header>
           <h3>마이페이지</h3>
         </Header>
-
         <ProfileSection>
           <FaUserCircle size={46} style={{ color: "#767676" }} />
           <UserInfo>
@@ -70,9 +70,7 @@ function MyPage() {
             <Email>{email}</Email>
           </UserInfo>
         </ProfileSection>
-
         <Divider />
-
         <Section>
           <SectionTitle>내 정보</SectionTitle>
           <InfoItem>
@@ -94,9 +92,7 @@ function MyPage() {
             <FiChevronRight style={{ color: "#767676", marginTop: "1.5px" }} />
           </ChangeSection>
         </Section>
-
         <Divider />
-
         <Section>
           <SectionTitle>미션 관리</SectionTitle>
           <SettingItem onClick={() => navigate("/missions/ongoing")}>
@@ -118,6 +114,22 @@ function MyPage() {
             로그아웃 <FiChevronRight />
           </SettingItem>
         </Section>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: "14vh",
+            marginBottom: "12vh",
+            fontSize: "14px",
+            color: "#999",
+          }}
+        >
+          <img src={MainLogoHeight} style={{ width: "28vh" }} />
+          그냥 사는 대로, 쌓이는 재미
+        </div>
       </Container>
       <Footer />
     </>
