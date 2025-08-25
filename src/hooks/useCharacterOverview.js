@@ -6,18 +6,24 @@ export default function useCharacterOverview() {
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState(null);
 
-  const [displayName, setDisplayName] = useState("캐릭터 닉네임");
-  const [characterId, setCharacterId] = useState(1);
-  const [level, setLevel]             = useState(1);
-  const [feedProgress, setFeedProgress] = useState(0);
-  const [feedsRequiredToNext, setFeedsReq] = useState(1);
+  const [displayName, setDisplayName] = useState("");
+  const [characterId, setCharacterId] = useState(null);
+  const [level, setLevel]             = useState(null);
+  const [feedProgress, setFeedProgress] = useState(null);
+  const [feedsRequiredToNext, setFeedsReq] = useState(null);
 
   // 오버뷰가 주는 배경 활성화 id
   const [activeBackgroundId, setActiveBackgroundId] = useState(null);
 
-  const img   = useMemo(() => getCharImg(characterId, level),   [characterId, level]);
-  const title = useMemo(() => getCharTitle(characterId, level), [characterId, level]);
-
+  const img   = useMemo(
+    () => (characterId != null && level != null) ? getCharImg(characterId, level) : null,
+    [characterId, level]
+  );
+  const title = useMemo(
+    () => (characterId != null && level != null) ? getCharTitle(characterId, level) : "",
+    [characterId, level]
+  );
+  
   const load = async () => {
     setLoading(true);
     setError(null);

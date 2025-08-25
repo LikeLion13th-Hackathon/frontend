@@ -16,7 +16,7 @@ import { Panel, CoinIcon } from "../../styles/Shop/Shop.styles";
 import ItemGrid from "./ItemGrid";
 import { TbCoin } from "react-icons/tb";
 
-export default function DecoTab({ coins, setCoins, reloadCoins, bg, skin }) {
+export default function DecoTab({ coins, setCoins, reloadCoins, bg, skin, reloadOverview }) {
   const [tab, setTab] = useState("BACKGROUND"); // BACKGROUND | CHARACTER
 
   const { items: bgItems, buy: buyBg, activate: activateBg } = bg;
@@ -25,6 +25,7 @@ export default function DecoTab({ coins, setCoins, reloadCoins, bg, skin }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalStep, setModalStep] = useState("confirm"); // confirm | success | error
   const [purchaseItem, setPurchaseItem] = useState(null); // { type:'bg'|'char', id, price }
+  const [applyingId, setApplyingId] = useState(null);
 
   const openConfirm = (payload) => {
     setPurchaseItem(payload);
@@ -38,10 +39,19 @@ export default function DecoTab({ coins, setCoins, reloadCoins, bg, skin }) {
   };
 
   const makeHandlers = (buyFn, activateFn, type) => ({
+
     onApply: async (id) => {
       try { 
+        setApplyingId(id);
         await activateFn(id); 
-      } catch {}
+        if (type === "char") {
+          await reloadOverview?.();
+        }
+      } catch (erroe) {
+
+      } finally {
+        setApplyingId(null);
+      }
     },
     onBuy: async (id, price) => {
       if (coins < price) {
@@ -90,6 +100,7 @@ export default function DecoTab({ coins, setCoins, reloadCoins, bg, skin }) {
             coins={coins}
             onApply={bgHandlers.onApply}
             onBuy={bgHandlers.onBuy}
+            applyingId={applyingId} 
           />
         ) : (
           <ItemGrid
@@ -98,6 +109,7 @@ export default function DecoTab({ coins, setCoins, reloadCoins, bg, skin }) {
             coins={coins}
             onApply={skinHandlers.onApply}
             onBuy={skinHandlers.onBuy}
+            applyingId={applyingId} 
           />
         )}
       </DecoBox>

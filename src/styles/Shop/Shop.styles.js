@@ -51,7 +51,10 @@ export const Underline = styled.div`
 
 // 코인 배지 스타일
 export const Badge = styled.div`
-  display: inline-flex;
+  position: absolute;
+  top: 100px;
+  left: 0;     
+  display: flex;
   align-items: center;
   gap: 6px;
   padding: 6px 10px;
@@ -84,6 +87,15 @@ export const Amount = styled.span`
 
 
 // 캐릭터 카드 스타일
+export const CharacterWrapper = styled.div`
+  position: relative;
+  min-height: clamp(360px, 60vh, 640px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const CharacterStage = styled.section`
   position: relative;
   margin: ${({ $variant }) => ($variant === "grow" ? "8px 0 0" : "4px 0 0")};
@@ -103,13 +115,9 @@ export const CharacterStageInner = styled.div`
 `;
 
 export const CharacterImg = styled.img`
-  width: clamp(160px, 40vw, 230px);
+  width: clamp(140px, 40vw, 230px);
   height: auto;
   display: block;
-
-  // 꾸미기 탭은 더 작게
-  ${CharacterStageInner}[$variant="deco"] & {
-    width: clamp(140px, 32vw, 210px);
 `;
 
 export const CharNameRow = styled.div`
@@ -156,9 +164,11 @@ export const LevelBadge = styled.span`
 `;
 
 export const Page = styled.div`
+  position: relative;
   min-height: 100dvh;
   padding-bottom: env(safe-area-inset-bottom);
-
+  display: flex; 
+  flex-direction: column;
   background: transparent;
   background-position: center;
   background-repeat: no-repeat;
