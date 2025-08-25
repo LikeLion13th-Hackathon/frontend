@@ -1,6 +1,6 @@
 // 미션 목록 페이지
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { CategoryTabs, CategoryButton } from "../styles/Mission.styles";
 import LocationBar from "../components/Mission/LocationBar";
 import MissionList from "../components/MainPage/MissionList";
@@ -41,7 +41,6 @@ const shuffleArray = (arr) => {
 
 export default function Mission() {
   const navigate = useNavigate();
-  const location = useLocation();
   const [missions, setMissions] = useState([]);
   const [activeTab, setActiveTab] = useState("전체");
   const [locationText, setLocationText] = useState("위치 확인 중…");
@@ -162,20 +161,17 @@ export default function Mission() {
   const filteredMissions =
     activeTab === "전체"
       ? sortByStatus([
-          ...missions.filter((m) => m.apiCategory === "CUSTOM"),
           ...missions.filter((m) => m.apiCategory === "AI_CUSTOM"),
+          ...missions.filter((m) => m.apiCategory === "CUSTOM"),
           ...missions.filter(
             (m) => !["CUSTOM", "AI_CUSTOM"].includes(m.apiCategory)
           ),
         ])
       : activeTab === "맞춤미션"
-      ? sortByStatus(
-          shuffleArray(
-            missions.filter((m) =>
-              ["CUSTOM", "AI_CUSTOM"].includes(m.apiCategory)
-            )
-          )
-        )
+      ? sortByStatus([
+          ...missions.filter((m) => m.apiCategory === "AI_CUSTOM"),
+          ...missions.filter((m) => m.apiCategory === "CUSTOM"),
+        ])
       : activeTab === "AI 추천"
       ? sortByStatus(missions.filter((m) => m.apiCategory === "AI_CUSTOM"))
       : sortByStatus(missions.filter((m) => m.category === activeTab));

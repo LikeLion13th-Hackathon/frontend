@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Header, BackIcon } from "../../styles/MyPage.styles";
 import Footer from "../Footer";
-import ReceiptEx from "../../assets/icons/ReceiptEx.png";
+import ReceiptEx from "../../assets/ReceiptEx.jpg";
 import { uploadReceipt } from "../../api/receipt";
 
 // 스타일
@@ -106,6 +106,21 @@ function ReceiptUpload() {
     }
   };
 
+  // [심사용] 예시 영수증 업로드
+  const handleDemoUpload = async () => {
+    try {
+      const response = await fetch(ReceiptEx);
+      const blob = await response.blob();
+      const demoFile = new File([blob], "ReceiptEx.png", { type: blob.type });
+      setFile(demoFile);
+
+      const url = URL.createObjectURL(demoFile);
+      setPreviewUrl(url);
+    } catch (err) {
+      console.error("심사용 예시 업로드 실패:", err);
+    }
+  };
+
   // 영수증 업로드 후 이동
   const handleScan = async () => {
     try {
@@ -160,6 +175,24 @@ function ReceiptUpload() {
               style={{ display: "none" }}
               onChange={handleFileUpload}
             />
+
+            {/* 심사용 버튼 */}
+            <button
+              style={{
+                marginTop: "16px",
+                color: "#FFFFFF",
+                background: "#6C63FF",
+                border: "none",
+                borderRadius: "6px",
+                padding: "10px 14px",
+                fontSize: "14px",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+              onClick={handleDemoUpload}
+            >
+              [심사용] 예시 영수증 업로드
+            </button>
           </UploadBox>
         ) : (
           <div style={{ width: "100%", maxWidth: "400px" }}>
@@ -172,6 +205,7 @@ function ReceiptUpload() {
                 marginBottom: "16px",
                 objectFit: "cover",
               }}
+              alt="업로드된 영수증"
             />
 
             <div style={{ display: "flex", gap: "12px" }}>
