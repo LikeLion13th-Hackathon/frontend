@@ -5,6 +5,7 @@ import Coin from "../../assets/icons/coin.png";
 import { TbBrandGoogleAnalytics } from "react-icons/tb";
 import { FiHelpCircle } from "react-icons/fi";
 import Setting from "../../assets/icons/setting.png";
+import MainLogo from "../../assets/logo/MainLogoHeight.png";
 
 export const Header = styled.div`
   display: flex;
@@ -27,6 +28,8 @@ export default function MainPageHeader({ coins, userName, onHelpClick }) {
   const navigate = useNavigate();
   return (
     <>
+      <img src={MainLogo} style={{ width: "24vh", marginTop: "2vh" }} />
+
       <Header>
         {/* 왼쪽: 코인 */}
         <Row style={{ gap: "4px" }}>
@@ -57,7 +60,6 @@ export default function MainPageHeader({ coins, userName, onHelpClick }) {
           />
         </Row>
       </Header>
-
       <Welcome>{userName}님, 반가워요!</Welcome>
     </>
   );

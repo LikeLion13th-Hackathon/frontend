@@ -10,8 +10,8 @@ import {
   SignUpLink,
 } from "../styles/Login.styles";
 import { Button } from "../components/Button";
-import bbiStep1 from "../assets/characters/bbiStep1.png";
-import MainLogo from "../assets/characters/Logo.png";
+import bbiStep2 from "../assets/characters/bbiStep2.png";
+import MainLogo from "../assets/logo/MainLogoWidth.png";
 import { login } from "../api/auth";
 
 function Login() {
@@ -97,8 +97,8 @@ function Login() {
   return (
     <Container>
       <img src={MainLogo} alt="타이틀" style={{ width: "18vh" }} />
-      <TitleSmall>소개문구 소개문구 소개문구</TitleSmall>
-      <BbiImg src={bbiStep1} />
+      <TitleSmall>미션픽: 소비로 동네를 깨우다</TitleSmall>
+      <BbiImg src={bbiStep2} />
 
       <Input
         type="email"
