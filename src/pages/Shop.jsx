@@ -126,6 +126,7 @@ export default function ShopPage() {
           reloadCoins={reloadCoins}
           bg={bg}
           skin={char}
+          reloadOverview={reloadOverview}
         />
       )}
       <Footer />

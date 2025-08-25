@@ -1,9 +1,9 @@
-import bg1 from "../assets/shop/backgrounds/bg1.png";
-import bg2 from "../assets/shop/backgrounds/bg2.png";
-import 경복궁 from "../assets/backgrounds/경복궁.png";
-import 남산 from "../assets/backgrounds/남산.png";
-import 차이나타운 from "../assets/backgrounds/차이나타운.png";
-import 한강 from "../assets/backgrounds/한강.png";
+import bg1 from "../assets/backgrounds/bg1.png";
+import bg2 from "../assets/backgrounds/bg2.png";
+import bg3 from "../assets/backgrounds/bg3.png";
+import bg4 from "../assets/backgrounds/bg4.png";
+import bg5 from "../assets/backgrounds/bg5.png";
+import bg6 from "../assets/backgrounds/bg6.png";
 
 import bbiStep1 from "../assets/characters/bbiStep1.png";
 import bbiStep2 from "../assets/characters/bbiStep2.png";
@@ -16,10 +16,10 @@ import catStep3 from "../assets/characters/catStep3.png";
 export const BG_MAP = {
   1: bg1,
   2: bg2,
-  3: 경복궁,
-  4: 남산,
-  5: 차이나타운,
-  6: 한강,
+  3: bg3,
+  4: bg4,
+  5: bg5,
+  6: bg6,
 };
 
 export const getBgImg = (backgroundId) => BG_MAP[backgroundId] ?? bg1;

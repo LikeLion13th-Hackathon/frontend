@@ -7,7 +7,7 @@ export const DecoBox = styled(GrowBox)`
   flex-direction: column;
   gap: 12px;
   margin: 0;
-  padding: 0;
+  padding: 0 0 10px;
 
   max-height: 40vh;
   overflow-y: auto;
@@ -19,7 +19,7 @@ export const DecoTabs = styled.div`
   z-index: 10;
 
   display: flex;
-  padding: 3vw 3vw 1vw;
+  padding: 3vw 3vw 2vw;
   gap: 2vw;
 
   border-radius: inherit;
