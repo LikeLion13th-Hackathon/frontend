@@ -16,7 +16,7 @@ import { Panel, CoinIcon } from "../../styles/Shop/Shop.styles";
 import ItemGrid from "./ItemGrid";
 import { TbCoin } from "react-icons/tb";
 
-export default function DecoTab({ coins, setCoins, reloadCoins, bg, skin }) {
+export default function DecoTab({ coins, setCoins, reloadCoins, bg, skin, reloadOverview }) {
   const [tab, setTab] = useState("BACKGROUND"); // BACKGROUND | CHARACTER
 
   const { items: bgItems, buy: buyBg, activate: activateBg } = bg;
@@ -41,6 +41,9 @@ export default function DecoTab({ coins, setCoins, reloadCoins, bg, skin }) {
     onApply: async (id) => {
       try { 
         await activateFn(id); 
+        if (type === "char") {
+          await reloadOverview?.();
+        }
       } catch {}
     },
     onBuy: async (id, price) => {
