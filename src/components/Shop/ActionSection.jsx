@@ -14,9 +14,11 @@ export default function ActionSection({
   onFeedClick,
   onEvolveClick,
   evolveReady = false,
-  cost = 100,
+  feedCost,
+  evolveCost,
 }) {
   const title = evolveReady ? "진화 시키기" : "먹이 주기";
+  const cost = evolveReady ? evolveCost : feedCost;
   const handler = evolveReady ? onEvolveClick : onFeedClick;
 
   return (

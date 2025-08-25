@@ -47,7 +47,7 @@ export default function ShopPage() {
 
   const activeCharImg = useMemo(() => {
     if (char.activeId) {
-      return getCharImg(skin.activeId, level);
+      return getCharImg(char.activeId, level);
     }
     return img || bbiStep1;
   }, [char.activeId, level, img]);
