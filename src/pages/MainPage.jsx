@@ -1,26 +1,17 @@
-// 메인페이지
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Page } from "../styles/MainPage.styles";
 import TutorialModal from "../components/MainPage/TutorialModal";
 import MainPageHeader from "../components/MainPage/MainPageHeader";
 import CharacterCard from "../components/MainPage/CharacterCard";
-import BbiStep1 from "../assets/characters/bbiStep1.png";
-import BgEx from "../assets/backgrounds/BackgroundEx.png";
 import MissionList from "../components/MainPage/MissionList";
 import Footer from "../components/Footer";
 import { fetchHomeCard, fetchCustomMissionsLimited } from "../api/mainPage";
 import { fetchMyProfile } from "../api/mypage";
 import { MISSION_CATEGORY } from "../constants/missionCategory";
 
-// 캐릭터/배경 매핑
-const CHARACTER_MAP = {
-  2: { name: "삐약이", image: BbiStep1 },
-};
-
-const BACKGROUND_MAP = {
-  1: BgEx,
-};
+// 상점과 동일한 매핑 유틸
+import { getBgImg, getCharImg, getCharTitle } from "../data/imageMap";
 
 function MainPage() {
   const navigate = useNavigate();
@@ -78,12 +69,14 @@ function MainPage() {
         <Page>
           {homeCard && (
             <CharacterCard
-              bg={`url(${BACKGROUND_MAP[homeCard.activeBackgroundId] || BgEx})`}
+              bg={`url(${getBgImg(homeCard.activeBackgroundId)})`}
               levelText={`Level ${homeCard.level}`}
               name={
-                CHARACTER_MAP[homeCard.activeCharacterId]?.name || "알 수 없음"
+                homeCard.displayName ||
+                getCharTitle(homeCard.activeCharacterId, homeCard.level)
               }
               progress={homeCard.progressPercent}
+              imgSrc={getCharImg(homeCard.activeCharacterId, homeCard.level)}
               onClick={() => navigate("/shop")}
             />
           )}
