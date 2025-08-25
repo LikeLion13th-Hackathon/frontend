@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   getBackgroundCatalog,
   getMyBackgrounds,
   purchaseBackground,
   activateBackground,
 } from "../api/background";
-import { getBgSrc } from "../data/imageMap";
+import { getBgImg } from "../data/imageMap";
 
 export default function useBgShop() {
   const [items, setItems] = useState([]);   // [{id,name,price,owned,active,img}]
@@ -22,18 +22,19 @@ export default function useBgShop() {
       ]);
 
       const invMap = new Map(inventory.map(i => [i.backgroundId, i]));
-
-      setItems(catalog.map(c => {
-        const inv = invMap.get(c.backgroundId);
-        return {
-          id: c.backgroundId,
-          name: c.name,
-          price: c.priceCoins,
-          owned: inv?.owned ?? c.owned ?? false,
-          active: inv?.active ?? c.active ?? false,
-          img: getBgSrc(c.backgroundId),
-        };
-      }));
+      setItems(
+        catalog.map(c => {
+          const inv = invMap.get(c.backgroundId);
+          return {
+            id: c.backgroundId,
+            name: c.name,
+            price: c.priceCoins,
+            owned: inv?.owned ?? c.owned ?? false,
+            active: inv?.active ?? c.active ?? false,
+            img: getBgImg(c.backgroundId),
+          };
+        })
+      );
     } catch (e) {
       setError(e);
     } finally {
@@ -57,7 +58,21 @@ export default function useBgShop() {
     catch (e) { setItems(snapshot); throw e; }
   };
 
-  const activeId = items.find((v) => v.active)?.id ?? null;
+  const activeId = useMemo(
+    () => items.find(v => v.active)?.id ?? null,
+    [items]
+  );
 
-  return { items, loading, error, reload: load, buy, activate, activeId };
+  const activeImg = useMemo(
+    () => items.find(v => v.active)?.img ?? null,
+    [items]
+  );
+
+  // 오버뷰에서 내려준 activeBackgroundId 동기화
+  const applyActiveFromOverview = (id) => {
+    if (id == null) return;
+    setItems(prev => prev.map(v => ({ ...v, active: v.id === id })));
+  };
+
+  return { items, loading, error, reload: load, buy, activate, activeId, activeImg, applyActiveFromOverview };
 }

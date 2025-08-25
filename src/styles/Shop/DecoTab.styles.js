@@ -164,3 +164,78 @@ export const Panel = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
+
+export const Overlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+`;
+
+export const ModalBox = styled.div`
+  width: min(500px, 80vw);
+  height: 230px; 
+  background: #FFFFFF;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; 
+  justify-content: center;
+`;
+
+export const Text = styled.div`
+  margin: 6px 0 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #212121;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  text-align: center;
+  gap: 8px;
+`;
+
+export const Buttons = styled.div`
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+export const BaseBtn = styled.button`
+  width: 100%; 
+  border: 0;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #FFFFFF;
+  padding: 0.8rem;
+`;
+
+export const Primary = styled(BaseBtn)`
+  background: #FACD2B;
+
+  &:active { transform: translateY(1px); }
+`;
+
+export const Secondary = styled(BaseBtn)`
+  background: #EBF0F7;
+  color: #808080;
+`;
+
+export const Emoji = styled.div`
+  font-size: 60px;
+  text-align: center; 
+  margin: 0;
+`;

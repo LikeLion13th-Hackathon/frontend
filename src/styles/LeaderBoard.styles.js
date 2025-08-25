@@ -123,6 +123,7 @@ export const Overlay = styled.div`
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
   display: grid;
   place-items: center;
   z-index: 2000;
@@ -133,7 +134,7 @@ export const ModalBox = styled.div`
   max-height: 80vh;
   background: #fff;
   border-radius: 15px;
-  padding: 16px;
+  padding: 1rem;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
