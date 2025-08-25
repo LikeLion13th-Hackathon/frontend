@@ -24,7 +24,7 @@ function Login() {
     // 로그인 API
     try {
       const res = await login({
-        email: "test3@example.com",
+        email: "test123@example.com",
         password: "123123123123123",
       });
       const {
