@@ -31,7 +31,7 @@ export const CHARACTER_MAP = {
     2: { img: bbiStep2, title: "활발한 삐약이" },
     3: { img: bbiStep3, title: "용맹한 삐약대장" },
   },
-  3: { // 캐릭터 ID 2 = 고양이
+  2: { // 캐릭터 ID 2 = 고양이
     1: { img: catStep1, title: "얌전한 야옹이" },
     2: { img: catStep2, title: "새침한 야옹이" },
     3: { img: catStep3, title: "도도한 야옹이" },
