@@ -14,6 +14,7 @@ import {
   fetchSpecialtyMissions,
   fetchAIMissions,
 } from "../api/mission";
+import ScreenLoader from "../components/ScreenLoader";
 
 // 상태 정규화
 const normalizeStatus = (status) => {
@@ -47,6 +48,7 @@ export default function Mission() {
   const [locationText, setLocationText] = useState("위치 확인 중…");
   const [completedCount, setCompletedCount] = useState(0);
   const [aiAdded, setAiAdded] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // 이미 추가된 AI 미션 추적
   const addedAIMissionsRef = useRef(0);
@@ -70,6 +72,7 @@ export default function Mission() {
   useEffect(() => {
     const loadAllMissions = async () => {
       try {
+        setLoading(true);
         const custom = await fetchCustomMissions();
         const [restaurants, landmarks, specialties] = await Promise.all([
           fetchRestaurantMissions(),
@@ -87,6 +90,8 @@ export default function Mission() {
         setMissions(combined);
       } catch (err) {
         console.error("미션 불러오기 실패:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -162,23 +167,23 @@ export default function Mission() {
   const filteredMissions =
     activeTab === "전체"
       ? sortByStatus([
-          ...missions.filter((m) => m.apiCategory === "CUSTOM"),
-          ...missions.filter((m) => m.apiCategory === "AI_CUSTOM"),
-          ...missions.filter(
-            (m) => !["CUSTOM", "AI_CUSTOM"].includes(m.apiCategory)
-          ),
-        ])
+        ...missions.filter((m) => m.apiCategory === "CUSTOM"),
+        ...missions.filter((m) => m.apiCategory === "AI_CUSTOM"),
+        ...missions.filter(
+          (m) => !["CUSTOM", "AI_CUSTOM"].includes(m.apiCategory)
+        ),
+      ])
       : activeTab === "맞춤미션"
-      ? sortByStatus(
+        ? sortByStatus(
           shuffleArray(
             missions.filter((m) =>
               ["CUSTOM", "AI_CUSTOM"].includes(m.apiCategory)
             )
           )
         )
-      : activeTab === "AI 추천"
-      ? sortByStatus(missions.filter((m) => m.apiCategory === "AI_CUSTOM"))
-      : sortByStatus(missions.filter((m) => m.category === activeTab));
+        : activeTab === "AI 추천"
+          ? sortByStatus(missions.filter((m) => m.apiCategory === "AI_CUSTOM"))
+          : sortByStatus(missions.filter((m) => m.category === activeTab));
 
   return (
     <>
@@ -241,6 +246,7 @@ export default function Mission() {
       </div>
 
       <Footer />
+      <ScreenLoader show={loading} />
     </>
   );
 }

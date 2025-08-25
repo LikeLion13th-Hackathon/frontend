@@ -47,30 +47,28 @@ export default function useCharShop() {
 
   useEffect(() => { load(); }, []);
 
-  // 구매 (UI 먼저 업뎃)
+  // 구매 (성공 후에만 목록 갱신)
   const buy = async (id) => {
-    const snapshot = items;
-    setItems(prev => prev.map(v => v.id === id ? { ...v, owned: true } : v));
     try {
       await purchaseSkin(id);
+      await load();
     } catch (e) {
-      setItems(snapshot);
+      console.error("구매 실패", e);
       throw e;
     }
   };
 
-  // 활성화
+  // 활성화 (성공 후에만 목록 갱신)
   const activate = async (id) => {
-    const snapshot = items;
-    setItems(prev => prev.map(v => ({ ...v, active: v.id === id })));
     try {
       await activateSkin(id);
+      await load();
     } catch (e) {
-      setItems(snapshot);
+      console.error("활성화 실패", e);
       throw e;
     }
   };
-  
+
   const activeId = items.find((v) => v.active)?.id ?? null;
 
   return { items, loading, error, reload: load, buy, activate, activeId };

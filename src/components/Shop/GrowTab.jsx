@@ -20,8 +20,9 @@ export default function GrowTab({
 
   const { feedProgress, feedsRequiredToNext } = data;
 
-  const percent = Math.min(100, +((feedProgress / Math.max(1, feedsRequiredToNext)) * 100).toFixed(1));
-  const evolveReady = feedProgress >= feedsRequiredToNext || percent >= 100;
+  const totalNeed = Math.max(1, feedProgress + Math.max(0, feedsRequiredToNext));
+  const percent = Math.min(100, +((feedProgress / totalNeed) * 100).toFixed(1));
+  const evolveReady = (feedsRequiredToNext ?? 0) <= 0;
 
   const handleFeed = async () => {
     if (loading || evolveReady) return;
