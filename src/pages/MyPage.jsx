@@ -24,20 +24,25 @@ import {
 import MainLogoHeight from "../assets/logo/MainLogoHeight.png";
 import Footer from "../components/Footer";
 import { fetchMyProfile } from "../api/mypage";
+import ScreenLoader from "../components/ScreenLoader";
 
 function MyPage() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // 유저 조회
   useEffect(() => {
     const loadUser = async () => {
       try {
+        setLoading(true);
         const data = await fetchMyProfile();
         setUser(data);
       } catch (err) {
         console.error("프로필 불러오기 실패:", err);
         toast.error("프로필을 불러오지 못했습니다.");
+      } finally {
+        setLoading(false);
       }
     };
     loadUser();
@@ -53,12 +58,11 @@ function MyPage() {
     navigate("/login");
   };
 
-  if (!user) return <div>로딩 중...</div>;
-
-  const { nickname, email, birthDate, job } = user;
+  const { nickname = "", email = "", birthDate = "", job = "" } = user || {};
 
   return (
     <>
+      <ScreenLoader show={loading} />
       <Container>
         <Header>
           <h3>마이페이지</h3>

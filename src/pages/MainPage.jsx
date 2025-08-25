@@ -13,6 +13,8 @@ import { MISSION_CATEGORY } from "../constants/missionCategory";
 // 상점과 동일한 매핑 유틸
 import { getBgImg, getCharImg, getCharTitle } from "../data/imageMap";
 
+import ScreenLoader from "../components/ScreenLoader";
+
 function MainPage() {
   const navigate = useNavigate();
 
@@ -20,6 +22,7 @@ function MainPage() {
   const [homeCard, setHomeCard] = useState(null);
   const [userName, setUserName] = useState("");
   const [tutorialOpen, setTutorialOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // 튜토리얼 모달 체크
   useEffect(() => {
@@ -40,6 +43,7 @@ function MainPage() {
   useEffect(() => {
     const loadData = async () => {
       try {
+        setLoading(true);
         const [homeData, missionsData, profileData] = await Promise.all([
           fetchHomeCard(),
           fetchCustomMissionsLimited(3),
@@ -51,6 +55,8 @@ function MainPage() {
         setUserName(profileData?.nickname || "게스트");
       } catch (error) {
         console.error("메인페이지 데이터 로딩 실패:", error);
+      } finally {
+        setLoading(false);
       }
     };
     loadData();
@@ -119,6 +125,7 @@ function MainPage() {
           localStorage.setItem("tutorialSeen", "true");
         }}
       />
+      <ScreenLoader show={loading} />
     </>
   );
 }
