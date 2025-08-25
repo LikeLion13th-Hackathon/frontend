@@ -170,7 +170,11 @@ export default function Mission() {
         ])
       : activeTab === "맞춤미션"
       ? sortByStatus(
-          shuffleArray(missions.filter((m) => m.apiCategory === "CUSTOM"))
+          shuffleArray(
+            missions.filter((m) =>
+              ["CUSTOM", "AI_CUSTOM"].includes(m.apiCategory)
+            )
+          )
         )
       : activeTab === "AI 추천"
       ? sortByStatus(missions.filter((m) => m.apiCategory === "AI_CUSTOM"))

@@ -1,12 +1,13 @@
 import instance from "./axiosInstance";
 
-// 홈 화면 조회
-export const fetchMainPageData = async () => {
-  try {
-    const { data } = await instance.get("/api/home");
-    return data;
-  } catch (error) {
-    console.error("메인페이지 데이터를 가져오는 데 실패했습니다.", error);
-    throw error;
-  }
+// 홈화면 캐릭터카드 조회
+export const fetchHomeCard = async () => {
+  const { data } = await instance.get("/api/home");
+  return data;
+};
+
+// 메인페이지 미션 조회
+export const fetchCustomMissionsLimited = async (limit = 3) => {
+  const { data } = await instance.get(`/api/missions/custom?limit=${limit}`);
+  return data;
 };
