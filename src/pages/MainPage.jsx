@@ -6,20 +6,33 @@ import MainPageHeader from "../components/MainPage/MainPageHeader";
 import CharacterCard from "../components/MainPage/CharacterCard";
 import MissionList from "../components/MainPage/MissionList";
 import Footer from "../components/Footer";
-import { fetchHomeCard, fetchCustomMissionsLimited } from "../api/mainPage";
+
+import { fetchCustomMissionsLimited } from "../api/mainPage";
 import { fetchMyProfile } from "../api/mypage";
 import { MISSION_CATEGORY } from "../constants/missionCategory";
 
-// 상점과 동일한 매핑 유틸
-import { getBgImg, getCharImg, getCharTitle } from "../data/imageMap";
-
+import useCharacterOverview from "../hooks/useCharacterOverview";
+import useCoins from "../hooks/useCoins";
+import { getBgImg } from "../data/imageMap";
 import ScreenLoader from "../components/ScreenLoader";
 
-function MainPage() {
+export default function MainPage() {
   const navigate = useNavigate();
 
+  const {
+    name,            // 서버 닉네임
+    title,           // 레벨/스킨에 따른 타이틀
+    level,
+    img,             // 레벨/스킨 매핑된 이미지
+    activeBackgroundId,
+    feedProgress,
+    feedsRequiredToNext,
+    loading: overviewLoading,
+  } = useCharacterOverview();
+
+  const { coins } = useCoins();
+
   const [missions, setMissions] = useState([]);
-  const [homeCard, setHomeCard] = useState(null);
   const [userName, setUserName] = useState("");
   const [tutorialOpen, setTutorialOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -39,61 +52,65 @@ function MainPage() {
     }
   }, []);
 
-  // 홈 카드 + 미션 + 프로필 불러오기
+  // 추천 미션 + 프로필만 불러옴 (캐릭터는 훅이 담당)
   useEffect(() => {
-    const loadData = async () => {
+    let aborted = false;
+    (async () => {
       try {
         setLoading(true);
-        const [homeData, missionsData, profileData] = await Promise.all([
-          fetchHomeCard(),
+        const [missionsData, profileData] = await Promise.all([
           fetchCustomMissionsLimited(3),
           fetchMyProfile(),
         ]);
-
-        setHomeCard(homeData);
-        setMissions(missionsData);
+        if (aborted) return;
+        setMissions(missionsData || []);
         setUserName(profileData?.nickname || "게스트");
-      } catch (error) {
-        console.error("메인페이지 데이터 로딩 실패:", error);
+      } catch (e) {
+        console.error("메인페이지 데이터 로딩 실패:", e);
       } finally {
         setLoading(false);
       }
-    };
-    loadData();
+    })();
+    return () => { aborted = true; };
   }, []);
+
+  // 게이지 계산 (feed / (feed + need))
+  const progressPercent = (() => {
+    const cur = Number(feedProgress ?? 0);
+    const need = Number(feedsRequiredToNext ?? 0);
+    const denom = Math.max(1, cur + need);
+    return Math.min(100, Math.round((cur / denom) * 100));
+  })();
 
   return (
     <>
       <Container>
         <MainPageHeader
-          coins={homeCard?.coins}
+          coins={coins}
           userName={userName}
           onHelpClick={() => setTutorialOpen(true)}
         />
 
-        {/* 캐릭터카드 */}
+        {/* 캐릭터 카드 */}
         <Page>
-          {homeCard && (
+          {!overviewLoading && (
             <CharacterCard
-              bg={`url(${getBgImg(homeCard.activeBackgroundId)})`}
-              levelText={`Level ${homeCard.level}`}
-              name={
-                homeCard.displayName ||
-                getCharTitle(homeCard.activeCharacterId, homeCard.level)
-              }
-              progress={homeCard.progressPercent}
-              imgSrc={getCharImg(homeCard.activeCharacterId, homeCard.level)}
+              bg={`url(${getBgImg(activeBackgroundId)})`}
+              levelText={`Level ${level}`}
+              name={name || title}
+              progress={progressPercent}
+              imgSrc={img}
               onClick={() => navigate("/shop")}
             />
           )}
         </Page>
 
-        {/* 추천 미션 */}
+        {/* 오늘의 추천 미션 */}
         <h2 style={{ fontSize: "18px", margin: "18px 6px 10px" }}>
           오늘의 추천 미션
         </h2>
         <MissionList
-          items={missions.map((m) => {
+          items={(missions || []).map((m) => {
             const categoryInfo =
               MISSION_CATEGORY[m.category] || MISSION_CATEGORY.ETC;
             return {
@@ -125,9 +142,9 @@ function MainPage() {
           localStorage.setItem("tutorialSeen", "true");
         }}
       />
-      <ScreenLoader show={loading} />
+
+      {/* 캐릭터/미션 로딩 모두 표시 */}
+      <ScreenLoader show={loading || overviewLoading} />
     </>
   );
 }
-
-export default MainPage;

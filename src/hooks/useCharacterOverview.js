@@ -8,7 +8,7 @@ export default function useCharacterOverview() {
 
   const [displayName, setDisplayName] = useState("");
   const [characterId, setCharacterId] = useState(null);
-  const [level, setLevel]             = useState(null);
+  const [level, setLevel] = useState(null);
   const [feedProgress, setFeedProgress] = useState(null);
   const [feedsRequiredToNext, setFeedsReq] = useState(null);
 
@@ -32,7 +32,7 @@ export default function useCharacterOverview() {
       const ch = ov?.character ?? {};
 
       if (ch.displayName != null) setDisplayName(ch.displayName);
-      if (ch.characterId != null) setCharacterId(ch.characterId);
+      if (ch.skinId != null) setCharacterId(ch.skinId);
       if (ch.level != null) setLevel(ch.level);
       if (ch.feedProgress != null) setFeedProgress(ch.feedProgress);
       if (ch.feedsRequiredToNext != null) setFeedsReq(ch.feedsRequiredToNext);
