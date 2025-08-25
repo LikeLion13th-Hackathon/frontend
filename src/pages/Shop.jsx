@@ -32,6 +32,7 @@ export default function ShopPage() {
     title,
     activeBackgroundId,
     reload: reloadOverview,
+    loading,
   } = useCharacterOverview();
 
   // 배경 상점
@@ -99,6 +100,7 @@ export default function ShopPage() {
         editable={tab === "GROW"}
         variant={tab === "GROW" ? "grow" : "deco"}
         onEditName={handleEditName}
+        loading={loading}
       />
 
       {tab === "GROW" ? (

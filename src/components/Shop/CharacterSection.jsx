@@ -16,6 +16,7 @@ export default function CharacterSection({
   editable = false,
   onEditName,
   variant = "grow",
+  loading,
 }) {
   return (
     <CharacterStage $variant={variant}>
