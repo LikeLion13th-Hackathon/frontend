@@ -19,7 +19,7 @@ export const DecoTabs = styled.div`
   z-index: 10;
 
   display: flex;
-  padding: 3vw 3vw 2vw;
+  padding: 3vw;
   gap: 2vw;
 
   border-radius: inherit;
