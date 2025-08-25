@@ -22,10 +22,14 @@ export default function ShopPage() {
     name,
     setName,
     characterId,
-    level, setLevel,
-    feedProgress, setFeedProgress,
-    feedsRequiredToNext, setFeedsRequiredToNext,
-    img, title,
+    level,
+    setLevel,
+    feedProgress,
+    setFeedProgress,
+    feedsRequiredToNext,
+    setFeedsRequiredToNext,
+    img,
+    title,
     activeBackgroundId,
     reload: reloadOverview,
   } = useCharacterOverview();
@@ -40,14 +44,17 @@ export default function ShopPage() {
   const char = useCharShop();
 
   useEffect(() => {
-    if (activeBackgroundId != null && typeof bg.applyActiveFromOverview === "function") {
+    if (
+      activeBackgroundId != null &&
+      typeof bg.applyActiveFromOverview === "function"
+    ) {
       bg.applyActiveFromOverview(activeBackgroundId);
     }
   }, [activeBackgroundId]);
 
   const activeCharImg = useMemo(() => {
     if (char.activeId) {
-      return getCharImg(skin.activeId, level);
+      return getCharImg(char.activeId, level);
     }
     return img || bbiStep1;
   }, [char.activeId, level, img]);

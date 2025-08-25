@@ -1,6 +1,6 @@
 import instance from "./axiosInstance";
 
-//상점 overview
+// 상점 overview
 export const getShopOverview = async () => {
   const { data } = await instance.get("/shop/overview");
   return data;
